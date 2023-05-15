@@ -1,9 +1,10 @@
 import whitelogo from "../assets/tinder_white.png";
 import colorlogo from "../assets/tinder-color.png";
 
-const Navbar = ({ minimal, authToken, setShowModal, showModal }) => {
+const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
   const handleClick = () => {
     setShowModal(true);
+    setIsSignUp(false)
   };
 
   return (
@@ -28,4 +29,4 @@ const Navbar = ({ minimal, authToken, setShowModal, showModal }) => {
   );
 };
 
-export default Navbar;
+export default Nav;
