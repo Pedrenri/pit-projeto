@@ -2,14 +2,16 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
 
-  let navigate = useNavigate;
+  let navigate = useNavigate();
 
   const handleClick = () => {
     setShowModal(false);
@@ -22,17 +24,21 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         setError("Passwords need to match!");
         return;
       }
-      const response = await axios.post("http://localhost:8000/signup", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `http://localhost:8000/${isSignUp ? "signup" : "login"}`,
+        {
+          email,
+          password,
+        }
+      );
 
-      const success = response.status == 201;
+      setCookie("AuthToken", response.data.token);
+      setCookie("UserId", response.data.userId);
 
-      
+      const success = response.status === 201;
 
-      if (success) navigate('/onboarding')
-      
+      if (success && isSignUp) navigate("/onboarding");
+      if (success && !isSignUp) navigate("/dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -85,6 +91,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         )}
 
         <input className="secondary-button" type="submit" />
+
         <p>{error}</p>
       </form>
       <hr />
