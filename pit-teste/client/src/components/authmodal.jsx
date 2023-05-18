@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
@@ -7,17 +9,30 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [confirmPassword, setConfirmPassword] = useState(null);
   const [error, setError] = useState(null);
 
+  let navigate = useNavigate;
+
   const handleClick = () => {
     setShowModal(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (isSignUp && password !== confirmPassword) {
         setError("Passwords need to match!");
+        return;
       }
-      console.log("make request to database");
+      const response = await axios.post("http://localhost:8000/signup", {
+        email,
+        password,
+      });
+
+      const success = response.status == 201;
+
+      
+
+      if (success) navigate('/onboarding')
+      
     } catch (error) {
       console.log(error);
     }
@@ -28,8 +43,8 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   return (
     <motion.div
       key="modal"
-      initial={{ y: 500, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      initial={{ y: 500 }}
+      animate={{ y: 0 }}
       exit={{ opacity: 0 }}
       className="authmodal"
     >

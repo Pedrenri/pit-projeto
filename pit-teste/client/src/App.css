@@ -22,7 +22,7 @@ h1 {
   font-weight: 700;
 }
 
-input {
+input,textarea {
   border: solid 1px black;
 }
 
@@ -146,7 +146,6 @@ nav .nav-button:disabled {
 
 .onboarding form label {
   margin: 10px 0;
-
 }
 
 .onboarding form .multInputContainer {
@@ -177,7 +176,7 @@ nav .nav-button:disabled {
   align-self: start;
 }
 
-.onboarding form input[type="radio"]:checked + label{
+.onboarding form input[type="radio"]:checked + label {
   border: solid 2px rgb(221, 39, 22);
 }
 
@@ -204,7 +203,7 @@ nav .nav-button:disabled {
   width: 70%;
   display: flex;
   flex-direction: column;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   height: 100vh;
 }
@@ -238,4 +237,71 @@ nav .nav-button:disabled {
 }
 
 /* ----- CHAT CONTAINER ----- */
+
+.chat-container {
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  width: 30%;
+  text-align: left;
+  z-index: 1;
+}
+
+.chat-container .chat-container-header {
+  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-container .option {
+  border: none;
+  background-color: white;
+  border-bottom: solid 4px rgb(243,33,33);
+  font-size: 20px;
+  margin: 2px;
+  padding: 10px;
+}
+
+.chat-container .option:disabled {
+  border-bottom: solid 4px rgb(187,187,187);
+}
+
+.chat-container .profile, .chat-container .log-out-icon {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-weight: 800;
+}
+
+.img-container {
+  height: 30px;
+  width: 30px;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 10px;
+}
+
+.img-container img {
+  width: 100%;
+}
+
+/* ----- CHAT DISPLAY ----- */
+
+.chat-display {
+  padding: 20px;
+  height: 60vh;
+  overflow-y: auto;
+
+}
+
+/* ----- CHAT INPUT ----- */
+.chat-input {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
 
