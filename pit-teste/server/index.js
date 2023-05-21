@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
   res.json("Hello to my app");
 });
 
+// SIGNUP
 app.post("/signup", async (req, res) => {
   const client = new MongoClient(uri);
   const { email, password } = req.body;
@@ -46,14 +47,13 @@ app.post("/signup", async (req, res) => {
       expiresIn: 60 * 24,
     });
 
-    res
-      .status(201)
-      .json({ token, userId: generateUserID });
+    res.status(201).json({ token, userId: generateUserID });
   } catch (err) {
     console.log(err);
   }
 });
 
+//LOGIN
 app.post("/login", async (req, res) => {
   const client = new MongoClient(uri);
   const { email, password } = req.body;
@@ -80,6 +80,30 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+
+// GET ONE USER
+app.get('/user', async (req, res) => {
+  const client = new MongoClient(uri)
+  const userId = req.query.userId
+
+  try {
+      await client.connect()
+      const database = client.db('app-data')
+      const users = database.collection('users')
+
+      const query = {user_id: userId}
+      const user = await users.findOne(query)
+      res.send(user)
+
+  } finally {
+      await client.close()
+  }
+})
+
+
+
+
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
 
@@ -95,38 +119,35 @@ app.get("/users", async (req, res) => {
   }
 });
 
-
-
-
-
-app.put('/user', async (req, res) => {
-  const client = new MongoClient(uri)
-  const formData = req.body.formData
-  
+app.put("/user", async (req, res) => {
+  const client = new MongoClient(uri);
+  const formData = req.body.formData;
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
 
-    const query = {user_id: formData.user_id}
+    const query = { user_id: formData.user_id };
     const updateDocument = {
       $set: {
         first_name: formData.first_name,
         dob_day: formData.dob_day,
         dob_month: formData.dob_month,
         dob_year: formData.dob_year,
-        show_gender:formData.show_gender,
+        show_gender: formData.show_gender,
         gender_identity: formData.gender_identity,
         url: formData.url,
-        matches: formData.matches
+        matches: formData.matches,
+        user_name: formData.user_name,
+        address: formData.address
       },
-    }
-    const insertedUser = await users.updateOne(query, updateDocument)
-    res.send(insertedUser)
+    };
+    const insertedUser = await users.updateOne(query, updateDocument);
+    res.send(insertedUser);
   } finally {
-    await client.close()
+    await client.close();
   }
-})
+});
 
 app.listen(PORT, () => console.log("Server running on PORT" + PORT));

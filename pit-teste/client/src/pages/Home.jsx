@@ -33,7 +33,7 @@ const Home = () => {
           className="primary-button"
           onClick={handleClick}
         >
-          {authToken ? "SignOut" : "Create Account"}
+          {authToken ? "Sair" : "Criar Conta"}
         </motion.button>
         {showModal && (
           <AuthModal

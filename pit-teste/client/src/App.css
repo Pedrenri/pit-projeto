@@ -80,12 +80,13 @@ nav .nav-button:disabled {
 /* ----- HOME ----- */
 
 .overlay {
-  background: rgb(247, 0, 125);
+  /* background: rgb(247, 0, 125);
   background: linear-gradient(
     90deg,
     rgba(247, 0, 125, 1) 0%,
     rgba(80, 7, 170, 1) 92%
-  );
+  ); */
+  background: url('./assets/homebg.png');
 }
 .home {
   margin-top: 30vh;
@@ -99,12 +100,11 @@ nav .nav-button:disabled {
   right: 0;
   margin-left: auto;
   margin-right: auto;
-  top: 50px;
   max-width: 360px;
-  height: 600px;
   background-color: white;
   border-radius: 10px;
   padding: 40px;
+  
 }
 
 .authmodal input[type="password"],
@@ -115,6 +115,10 @@ nav .nav-button:disabled {
   font-size: 17px;
 }
 
+.close-icon:hover {
+  cursor: pointer;
+}
+
 /* ----- ONBOARDING ----- */
 
 .onboarding {
@@ -123,10 +127,8 @@ nav .nav-button:disabled {
 }
 
 .onboarding form section {
-  display: flex;
   flex-direction: column;
   padding: 20px;
-  width: 35%;
   text-align: start;
 }
 
@@ -167,9 +169,6 @@ nav .nav-button:disabled {
 
 .onboarding form input[type="radio"] {
   display: none;
-}
-.onboarding form input[type="number"] {
-  width: 20%;
 }
 
 .onboarding form input[type="checkbox"] {
@@ -277,9 +276,9 @@ nav .nav-button:disabled {
 }
 
 .img-container {
-  height: 30px;
-  width: 30px;
-  border-radius: 15px;
+  height: 60px;
+  width: 60px;
+  border-radius: 30px;
   overflow: hidden;
   margin: 10px;
 }
