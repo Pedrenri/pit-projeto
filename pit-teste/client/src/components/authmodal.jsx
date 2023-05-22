@@ -65,7 +65,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       </div>
       <h2>{isSignUp ? "Criar Conta" : "Log In"}</h2>
       <p>
-      Ao clicar em LogIn, você aceita nossos termos. Veja comos cuidamos de seus dados em nossa Política de Privacidade e Política de Cookies.
+      Ao clicar em Log In, você aceita nossos termos. Veja comos cuidamos de seus dados em nossa Política de Privacidade e Política de Cookies.
       </p>
       <form className="flex flex-col" action="" onSubmit={handleSubmit}>
         <input

@@ -9,6 +9,7 @@ const Dashboard = () => {
   const [ user, setUser] = useState(null)
   const [cookies, setCookie, removeCookie] = useCookies(['user'])
   const [genderedUsers, setGenderedUsers] = useState(null)
+  const [lastDirection, setLastDirection] = useState();
 
   const userId = cookies.UserId
   const getUser = async () => {
@@ -25,7 +26,7 @@ const Dashboard = () => {
 const getGenderedUsers = async () => {
   try {
     const response = await axios.get('http://localhost:8000/gendered-users', {
-      params: {gender: user?.gender == 'man' ? 'woman' : 'man'}
+      params: {gender: user?.gender_identity}
     })
     setGenderedUsers(response.data)
   } catch (error) {
@@ -36,34 +37,12 @@ const getGenderedUsers = async () => {
   useEffect(() => {
     getUser()
     getGenderedUsers()
-  },[user]);
+  },[user,genderedUsers]);
+
+  console.log(genderedUsers)
 
 
   
-
-  const characters = [
-    {
-      name: "Richard Hendricks",
-      url: "https://th.bing.com/th/id/R.e528ca8a1dac419ff2b0071120ecc986?rik=JsDebwtwu6v8sA&riu=http%3a%2f%2fwww.wallpapers13.com%2fwp-content%2fuploads%2f2016%2f01%2fCool-and-Beautiful-Nature-desktop-wallpaper-image-2560X1600.jpg&ehk=WWtNurVm9a0rWJrce%2fWxK5ehuPq%2bkDe%2fJtza2JHnrgQ%3d&risl=&pid=ImgRaw&r=0",
-    },
-    {
-      name: "Erlich Bachman",
-      url: "https://th.bing.com/th/id/R.e528ca8a1dac419ff2b0071120ecc986?rik=JsDebwtwu6v8sA&riu=http%3a%2f%2fwww.wallpapers13.com%2fwp-content%2fuploads%2f2016%2f01%2fCool-and-Beautiful-Nature-desktop-wallpaper-image-2560X1600.jpg&ehk=WWtNurVm9a0rWJrce%2fWxK5ehuPq%2bkDe%2fJtza2JHnrgQ%3d&risl=&pid=ImgRaw&r=0",
-    },
-    {
-      name: "Monica Hall",
-      url: "https://th.bing.com/th/id/R.e528ca8a1dac419ff2b0071120ecc986?rik=JsDebwtwu6v8sA&riu=http%3a%2f%2fwww.wallpapers13.com%2fwp-content%2fuploads%2f2016%2f01%2fCool-and-Beautiful-Nature-desktop-wallpaper-image-2560X1600.jpg&ehk=WWtNurVm9a0rWJrce%2fWxK5ehuPq%2bkDe%2fJtza2JHnrgQ%3d&risl=&pid=ImgRaw&r=0",
-    },
-    {
-      name: "Jared Dunn",
-      url: "https://th.bing.com/th/id/R.e528ca8a1dac419ff2b0071120ecc986?rik=JsDebwtwu6v8sA&riu=http%3a%2f%2fwww.wallpapers13.com%2fwp-content%2fuploads%2f2016%2f01%2fCool-and-Beautiful-Nature-desktop-wallpaper-image-2560X1600.jpg&ehk=WWtNurVm9a0rWJrce%2fWxK5ehuPq%2bkDe%2fJtza2JHnrgQ%3d&risl=&pid=ImgRaw&r=0",
-    },
-    {
-      name: "Dinesh Chugtai",
-      url: "https://th.bing.com/th/id/R.e528ca8a1dac419ff2b0071120ecc986?rik=JsDebwtwu6v8sA&riu=http%3a%2f%2fwww.wallpapers13.com%2fwp-content%2fuploads%2f2016%2f01%2fCool-and-Beautiful-Nature-desktop-wallpaper-image-2560X1600.jpg&ehk=WWtNurVm9a0rWJrce%2fWxK5ehuPq%2bkDe%2fJtza2JHnrgQ%3d&risl=&pid=ImgRaw&r=0",
-    },
-  ];
-  const [lastDirection, setLastDirection] = useState();
 
   const swiped = (direction, nameToDelete) => {
     console.log("removing: " + nameToDelete);
@@ -81,18 +60,18 @@ const getGenderedUsers = async () => {
       <ChatContainer user={user} />
       <div className="swipe-container">
         <div className="card-container">
-          {characters.map((character) => (
+          {genderedUsers?.map((character) => (
             <TinderCard
               className="swipe"
-              key={character.name}
-              onSwipe={(dir) => swiped(dir, character.name)}
-              onCardLeftScreen={() => outOfFrame(character.name)}
+              key={character.user_name}
+              onSwipe={(dir) => swiped(dir, character.user_name)}
+              onCardLeftScreen={() => outOfFrame(character.user_name)}
             >
               <div
                 style={{ backgroundImage: "url(" + character.url + ")" }}
                 className="card"
               >
-                <h3>{character.name}</h3>
+                <h3>{character.user_name}</h3>
               </div>
             </TinderCard>
           ))}
