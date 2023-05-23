@@ -1,2 +1,3 @@
-# pit-projeto
- Projeteo de Inovação Tecnológica feito para o colégio.
+# PIT - Projeto de Inovação Tecnológica
+Projeto PetMatch - um Tinder para cachorros
+[!My Skills](https://skills.thijs.gg/icons?i=react,nodejs,mongodb)
