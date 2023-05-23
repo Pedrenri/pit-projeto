@@ -144,7 +144,7 @@ const Onboarding = () => {
                 className="w-4/12 md:w-1/5"
               />
             </div>
-            <label>Gênero</label>
+            <label>Sexo</label>
             <div className="multInputContainer justify-center md:justify-start">
               <input
                 type="radio"
@@ -164,15 +164,6 @@ const Onboarding = () => {
                 checked={formData.gender_identity === "woman"}
               />
               <label htmlFor="woman_gender_id">Feminino</label>
-              <input
-                type="radio"
-                id="more_gender_id"
-                name="gender_identity"
-                value="more"
-                onChange={handleChange}
-                checked={formData.gender_identity === "more"}
-              />
-              <label htmlFor="more_gender_id">Mais</label>
             </div>
             <label htmlFor="show-gender">Exibir gênero no perfil?</label>
             <input

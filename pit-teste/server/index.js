@@ -31,7 +31,7 @@ app.post("/signup", async (req, res) => {
     const existingUser = await users.findOne({ email });
 
     if (existingUser) {
-      return res.status(409).send("User already exists. Please LOGIN.");
+      return res.status(409).send("Usuário já existe. Por favor Faça o Login!");
     }
 
     const sanitizedEmail = email.toLowerCase();
@@ -98,10 +98,25 @@ app.get("/user", async (req, res) => {
   }
 });
 
+//Users(mapping matches or something like that I don't really get it)
+app.get("/users", async (req, res) => {
+  const client = new MongoClient(uri);
+  const userIds = JSON.parse(req.query.userIds);
+  console.log(req.query.userIds)
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+  } finally {
+    await client.close();
+  }
+});
+
+// GET USERS
 app.get("/gendered-users", async (req, res) => {
   const client = new MongoClient(uri);
   const gender = req.query.gender;
-  const genderQuery = gender == "woman" ? "man" : "woman"
+  const genderQuery = gender == "woman" ? "man" : "woman";
 
   try {
     await client.connect();
@@ -116,6 +131,7 @@ app.get("/gendered-users", async (req, res) => {
   }
 });
 
+// UPDATE USER
 app.put("/user", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
@@ -142,6 +158,28 @@ app.put("/user", async (req, res) => {
     };
     const insertedUser = await users.updateOne(query, updateDocument);
     res.send(insertedUser);
+  } finally {
+    await client.close();
+  }
+});
+
+// MATCHES
+app.put("/addmatch", async (req, res) => {
+  const client = new MongoClient(uri);
+  const { userId, matchedUserId } = req.body;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const query = { user_id: userId };
+    const updateDocument = {
+      $push: { matches: { user_id: matchedUserId } },
+    };
+
+    const user = await users.updateOne(query, updateDocument);
+    res.send(user);
   } finally {
     await client.close();
   }

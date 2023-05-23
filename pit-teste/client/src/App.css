@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&display=swap");
 
+:root {
+  overflow-x: hidden;
+}
+
 html,
 body {
   margin: 0;
@@ -22,7 +26,8 @@ h1 {
   font-weight: 700;
 }
 
-input,textarea {
+input,
+textarea {
   border: solid 1px black;
 }
 
@@ -86,7 +91,7 @@ nav .nav-button:disabled {
     rgba(247, 0, 125, 1) 0%,
     rgba(80, 7, 170, 1) 92%
   ); */
-  background: url('./assets/homebg.png');
+  background: url("./assets/homebg.png");
 }
 .home {
   margin-top: 30vh;
@@ -104,7 +109,6 @@ nav .nav-button:disabled {
   background-color: white;
   border-radius: 10px;
   padding: 40px;
-  
 }
 
 .authmodal input[type="password"],
@@ -214,6 +218,10 @@ nav .nav-button:disabled {
 .card-container {
   width: 400px;
   height: 650px;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 .card {
@@ -257,22 +265,27 @@ nav .nav-button:disabled {
 .chat-container .option {
   border: none;
   background-color: white;
-  border-bottom: solid 4px rgb(243,33,33);
+  border-bottom: solid 4px rgb(243, 33, 33);
   font-size: 20px;
   margin: 2px;
   padding: 10px;
 }
 
 .chat-container .option:disabled {
-  border-bottom: solid 4px rgb(187,187,187);
+  border-bottom: solid 4px rgb(187, 187, 187);
 }
 
-.chat-container .profile, .chat-container .log-out-icon {
+.chat-container .profile,
+.chat-container .log-out-icon {
   padding: 20px;
   display: flex;
   align-items: center;
   color: white;
   font-weight: 800;
+}
+
+.log-out-icon:hover {
+  cursor: pointer;
 }
 
 .img-container {
@@ -293,7 +306,6 @@ nav .nav-button:disabled {
   padding: 20px;
   height: 60vh;
   overflow-y: auto;
-
 }
 
 /* ----- CHAT INPUT ----- */
@@ -302,5 +314,3 @@ nav .nav-button:disabled {
   display: flex;
   flex-direction: column;
 }
-
-
