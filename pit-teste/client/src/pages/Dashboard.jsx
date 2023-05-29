@@ -66,7 +66,7 @@ const Dashboard = () => {
     .concat(userId);
 
   const filteredGenderedUsers = genderedUsers?.filter(
-    (genderedUser) => !matchedUserIds.includes(genderedUser.user_id)
+    (genderedUser) => !matchedUserIds?.includes(genderedUser.user_id)
   );
 
   return (
