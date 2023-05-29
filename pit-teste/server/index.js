@@ -31,7 +31,7 @@ app.post("/signup", async (req, res) => {
     const existingUser = await users.findOne({ email });
 
     if (existingUser) {
-      return res.status(409).send("Usuário já existe. Por favor Faça o Login!");
+      return res.status(409).send("Usuário já cadastrado! Faça login!");
     }
 
     const sanitizedEmail = email.toLowerCase();
@@ -65,18 +65,24 @@ app.post("/login", async (req, res) => {
 
     const user = await users.findOne({ email });
 
-    const correctPword = await bcrypt.compare(password, user.hash_passwd);
+    if (!user) {
+      res.status(401).send("Usuário não encontrado");
+    }
+
+    const correctPword = await bcrypt.compare(password, user?.hash_passwd);
 
     if (user && correctPword) {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-
       res.status(201).json({ token, userId: user.user_id });
-    }
-    res.status(400).send("Invalid Cred");
+    } else res.status(400).send("Senha inválida");
+
+
+    /* res.status(400).send("Credenciais inválidas"); */
   } catch (err) {
     console.log(err);
+    
   }
 });
 
@@ -102,11 +108,26 @@ app.get("/user", async (req, res) => {
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
-  console.log(req.query.userIds)
+  console.log(userIds);
+
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
+
+    const pipeLine = [
+      {
+        $match: {
+          user_id: {
+            $in: userIds,
+          },
+        },
+      },
+    ];
+
+    const foundUsers = await users.aggregate(pipeLine).toArray();
+    console.log(foundUsers);
+    res.send(foundUsers);
   } finally {
     await client.close();
   }

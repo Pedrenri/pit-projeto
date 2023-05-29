@@ -19,6 +19,10 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
     setShowModal(false);
   };
 
+  const changeModal = () => {
+    setIsSignUp(!isSignUp);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,15 +46,14 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       if (success && isSignUp) navigate("/onboarding");
       if (success && !isSignUp) navigate("/dashboard");
 
-      window.location.reload()
+      window.location.reload();
 
       window.location.reload();
     } catch (error) {
       console.log(error);
+      setError(error.response.data);
     }
   };
-
-  console.log(password, email, confirmPassword);
 
   return (
     <motion.div
@@ -58,14 +61,15 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       initial={{ y: 500 }}
       animate={{ y: 0 }}
       exit={{ y: 500 }}
-      className="authmodal h-4/5 xl:h-1/2 top-24 xl:top-52"
+      className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
     >
       <div className="close-icon float-right" onClick={handleClick}>
         ⓧ
       </div>
-      <h2>{isSignUp ? "Criar Conta" : "Log In"}</h2>
-      <p>
-      Ao clicar em Log In, você aceita nossos termos. Veja comos cuidamos de seus dados em nossa Política de Privacidade e Política de Cookies.
+      <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
+      <p className="py-5">
+        Ao clicar em Enviar, você aceita nossos termos. Veja comos cuidamos de
+        seus dados em nossa Política de Privacidade e Política de Cookies.
       </p>
       <form className="flex flex-col" action="" onSubmit={handleSubmit}>
         <input
@@ -98,7 +102,33 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         <input className="secondary-button" type="submit" />
       </form>
       <hr />
-      <p>{error}</p>
+      {isSignUp && (
+        <p className="pt-2">
+          Já tem uma conta?{" "}
+          <a href="#" className="text-sky-600 underline" onClick={changeModal}>
+            Faça Login!
+          </a>
+        </p>
+      )}
+      {!isSignUp && (
+        <>
+          <p className="pt-2 mb-2">
+            Não tem uma conta?{" "}
+            <a
+              href="#"
+              className="text-sky-600 underline"
+              onClick={changeModal}
+            >
+              Cadastre-se!
+            </a>
+          </p>
+          <a href="#" className="text-purple-600	 underline">
+            Esqueceu sua senha?
+          </a>
+
+        </>
+      )}
+      <p className="text-red-600 pt-5">{error}</p>
     </motion.div>
   );
 };

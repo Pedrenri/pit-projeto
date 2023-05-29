@@ -1,4 +1,4 @@
-import whitelogo from "../assets/tinder_white.png";
+import whitelogo from "../assets/white_logo.png";
 import colorlogo from "../assets/tinder-color.png";
 
 const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
@@ -22,7 +22,7 @@ const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
           onClick={handleClick}
           disabled={showModal}
         >
-          Log in
+          Login
         </button>
       )}
     </nav>
