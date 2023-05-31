@@ -13,8 +13,6 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
   let navigate = useNavigate();
 
-  console.log(email, password, confirmPassword);
-
   const handleClick = () => {
     setShowModal(false);
   };
@@ -43,6 +41,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       console.log(response.data.userId);
 
       const success = response.status === 201;
+      
       if (success && isSignUp) navigate("/onboarding");
       if (success && !isSignUp) navigate("/dashboard");
 
@@ -73,10 +72,10 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       </p>
       <form className="flex flex-col" action="" onSubmit={handleSubmit}>
         <input
-          type="email"
+          type={isSignUp?"email":"text"}
           id="email"
           name="email"
-          placeholder="Email"
+          placeholder={isSignUp?"Email":"Email ou Nome de Usuário"}
           required
           onChange={(e) => setEmail(e.target.value)}
         />

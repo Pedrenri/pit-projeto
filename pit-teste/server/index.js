@@ -5,6 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer")
+const crypto = require('crypto')
 
 const uri =
   "mongodb+srv://phenrigoncalves:Pperafa19@pit.kibo8j6.mongodb.net/?retryWrites=true&w=majority";
@@ -23,22 +25,48 @@ app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
   const generateUserID = uuidv4();
   const hashedPassword = await bcrypt.hash(password, 10);
+  const regx =
+    /^([ a-z\d][a-z\d_\-.]+[a-z\d]){1,10}@(gmail)\.[a-z]{2,10}(\.[a-z]{2,20})?$/gm;
+
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
     const existingUser = await users.findOne({ email });
+    const verificationCode = crypto.randomBytes(4).toString('hex')
 
     if (existingUser) {
       return res.status(409).send("Usuário já cadastrado! Faça login!");
     }
+
+    if(!regx.test(email)) {
+      return res.status(409).send("Email Inválido! O único domínio compatível é Gmail!");
+    }
+
+    const transporter = nodemailer.createTransport({
+      service:'gmail',
+      auth: {
+        user:"phenrigoncalves@gmail.com",
+        pass:"jcyaxyukznoaoxim"
+      }
+    })
+
+    const mailOptions = {
+      from: 'phenrigoncalves@gmail.com',
+      to: email,
+      subject: "Verificação de Email PetMatch",
+      text: `Seu código de verificação é ${verificationCode}`
+    }
+
+    await transporter.sendMail(mailOptions)
 
     const sanitizedEmail = email.toLowerCase();
     const data = {
       user_id: generateUserID,
       email: sanitizedEmail,
       hash_passwd: hashedPassword,
+      verificationCode: verificationCode
     };
 
     const insertedUser = await users.insertOne(data);
@@ -55,18 +83,35 @@ app.post("/signup", async (req, res) => {
 
 //LOGIN
 app.post("/login", async (req, res) => {
+  const regx =
+    /^([ a-z\d][a-z\d_\-.]+[a-z\d]){1,10}@(gmail)\.[a-z]{2,10}(\.[a-z]{2,20})?$/gm;
+
   const client = new MongoClient(uri);
   const { email, password } = req.body;
+  const user_name = email;
+  const testEmail = regx.test(email);
+
+  const checkUsername = () => {
+    if (testEmail) {
+      return true;
+    } else return false;
+  };
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
 
-    const user = await users.findOne({ email });
+    let user = await users.findOne({ email })
+
+    if (!checkUsername()) {
+      user = await users.findOne({ user_name });
+    }
 
     if (!user) {
-      res.status(401).send("Usuário não encontrado");
+      res
+        .status(401)
+        .send("Usuário não encontrado! Verifique o email ou nome de usuário!");
     }
 
     const correctPword = await bcrypt.compare(password, user?.hash_passwd);
@@ -78,11 +123,8 @@ app.post("/login", async (req, res) => {
       res.status(201).json({ token, userId: user.user_id });
     } else res.status(400).send("Senha inválida");
 
-
-    /* res.status(400).send("Credenciais inválidas"); */
   } catch (err) {
     console.log(err);
-    
   }
 });
 
