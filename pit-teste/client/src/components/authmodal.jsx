@@ -3,11 +3,13 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import Verificationmodal from "./verificationmodal";
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(null);
   const [error, setError] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(null);
 
@@ -37,13 +39,14 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
       setCookie("AuthToken", response.data.token);
       setCookie("UserId", response.data.userId);
-
-      console.log(response.data.userId);
+      const hasUsername = response.data.userName
 
       const success = response.status === 201;
-      
+
       if (success && isSignUp) navigate("/onboarding");
-      if (success && !isSignUp) navigate("/dashboard");
+      if (success && !isSignUp && !hasUsername) navigate("/onboarding");
+      if (success && !isSignUp && hasUsername) navigate("/dashboard");
+    
 
       window.location.reload();
 
@@ -55,80 +58,87 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   };
 
   return (
-    <motion.div
-      key="modal"
-      initial={{ y: 500 }}
-      animate={{ y: 0 }}
-      exit={{ y: 500 }}
-      className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
-    >
-      <div className="close-icon float-right" onClick={handleClick}>
-        ⓧ
-      </div>
-      <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
-      <p className="py-5">
-        Ao clicar em Enviar, você aceita nossos termos. Veja comos cuidamos de
-        seus dados em nossa Política de Privacidade e Política de Cookies.
-      </p>
-      <form className="flex flex-col" action="" onSubmit={handleSubmit}>
-        <input
-          type={isSignUp?"email":"text"}
-          id="email"
-          name="email"
-          placeholder={isSignUp?"Email":"Email ou Nome de Usuário"}
-          required
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          id="password"
-          name="password"
-          placeholder="Senha"
-          required
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {isSignUp && (
+    <div>
+      <motion.div
+        key="modal"
+        initial={{ y: 500 }}
+        animate={{ y: 0 }}
+        exit={{ y: 500 }}
+        className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
+      >
+        <div className="close-icon float-right" onClick={handleClick}>
+          ⓧ
+        </div>
+        <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
+        <p className="py-5">
+          Ao clicar em Enviar, você aceita nossos termos. Veja comos cuidamos de
+          seus dados em nossa Política de Privacidade e Política de Cookies.
+        </p>
+        <form className="flex flex-col" action="" onSubmit={handleSubmit}>
+          <input
+            type={isSignUp ? "email" : "text"}
+            id="email"
+            name="email"
+            placeholder={isSignUp ? "Email" : "Email ou Nome de Usuário"}
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <input
             type="password"
-            id="password-check"
-            name="password-check"
-            placeholder="Confirme sua senha"
+            id="password"
+            name="password"
+            placeholder="Senha"
             required
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
           />
-        )}
+          {isSignUp && (
+            <input
+              type="password"
+              id="password-check"
+              name="password-check"
+              placeholder="Confirme sua senha"
+              required
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          )}
 
-        <input className="secondary-button" type="submit" />
-      </form>
-      <hr />
-      {isSignUp && (
-        <p className="pt-2">
-          Já tem uma conta?{" "}
-          <a href="#" className="text-sky-600 underline" onClick={changeModal}>
-            Faça Login!
-          </a>
-        </p>
-      )}
-      {!isSignUp && (
-        <>
-          <p className="pt-2 mb-2">
-            Não tem uma conta?{" "}
+          <input className="secondary-button" type="submit" />
+        </form>
+        <hr />
+        {isSignUp && (
+          <p className="pt-2">
+            Já tem uma conta?{" "}
             <a
               href="#"
               className="text-sky-600 underline"
               onClick={changeModal}
             >
-              Cadastre-se!
+              Faça Login!
             </a>
           </p>
-          <a href="#" className="text-purple-600	 underline">
-            Esqueceu sua senha?
-          </a>
+        )}
+        {!isSignUp && (
+          <>
+            <p className="pt-2 mb-2">
+              Não tem uma conta?{" "}
+              <a
+                href="#"
+                className="text-sky-600 underline"
+                onClick={changeModal}
+              >
+                Cadastre-se!
+              </a>
+            </p>
+            <a href="#" className="text-purple-600 underline">
+              Esqueceu sua senha?
+            </a>
+          </>
+        )}
+        <p className="text-red-600 pt-5">{error}</p>
+      </motion.div>
 
-        </>
-      )}
-      <p className="text-red-600 pt-5">{error}</p>
-    </motion.div>
+      {showAuthModal && <Verificationmodal setShowAuthModal = {showAuthModal} />}
+    </div>
   );
 };
 

@@ -47,8 +47,8 @@ app.post("/signup", async (req, res) => {
     const transporter = nodemailer.createTransport({
       service:'gmail',
       auth: {
-        user:"phenrigoncalves@gmail.com",
-        pass:"jcyaxyukznoaoxim"
+        user:"pitpetmatch@gmail.com",
+        pass:"pcnxlfabwlqssefq"
       }
     })
 
@@ -75,7 +75,7 @@ app.post("/signup", async (req, res) => {
       expiresIn: 60 * 24,
     });
 
-    res.status(201).json({ token, userId: generateUserID });
+    res.status(201).json({ token, userId: generateUserID, verificationCode });
   } catch (err) {
     console.log(err);
   }
@@ -120,7 +120,7 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-      res.status(201).json({ token, userId: user.user_id });
+      res.status(201).json({ token, userId: user.user_id, userName: user.user_name });
     } else res.status(400).send("Senha inválida");
 
   } catch (err) {
