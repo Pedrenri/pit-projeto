@@ -314,3 +314,35 @@ nav .nav-button:disabled {
   display: flex;
   flex-direction: column;
 }
+
+/* UPDATE MODAL */
+
+.updateModal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 45rem / 2 );
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  border-radius: 10px;
+  padding: 2.5rem;
+  box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
+  overflow: scroll;
+}
+
+.updateModal form input {
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.updateModal .photo-container {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 3.5rem;
+  overflow: hidden;
+}

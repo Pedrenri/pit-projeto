@@ -28,7 +28,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
     try {
       if (isSignUp && password !== confirmPassword) {
-        setError("Passwords need to match!");
+        setError("As senhas precisam ser iguais!");
         return;
       }
 
@@ -43,12 +43,10 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
       const success = response.status === 201;
 
-      if (success && isSignUp) navigate("/onboarding");
-      if (success && !isSignUp && !hasUsername) navigate("/onboarding");
+      if (success && isSignUp || success && !isSignUp && !hasUsername) navigate("/onboarding");
+      /* if (success && !isSignUp && !hasUsername) navigate("/onboarding"); */
       if (success && !isSignUp && hasUsername) navigate("/dashboard");
     
-
-      window.location.reload();
 
       window.location.reload();
     } catch (error) {

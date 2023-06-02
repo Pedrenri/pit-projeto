@@ -59,7 +59,7 @@ app.post("/signup", async (req, res) => {
       text: `Seu código de verificação é ${verificationCode}`
     }
 
-    await transporter.sendMail(mailOptions)
+    transporter.sendMail(mailOptions)
 
     const sanitizedEmail = email.toLowerCase();
     const data = {
@@ -140,6 +140,7 @@ app.get("/user", async (req, res) => {
 
     const query = { user_id: userId };
     const user = await users.findOne(query);
+    
     res.send(user);
   } finally {
     await client.close();
@@ -194,7 +195,7 @@ app.get("/gendered-users", async (req, res) => {
   }
 });
 
-// UPDATE USER
+// FINISH USER CREATE ACCOUNT
 app.put("/user", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
@@ -217,6 +218,38 @@ app.put("/user", async (req, res) => {
         matches: formData.matches,
         user_name: formData.user_name,
         address: formData.address,
+      },
+    };
+    const insertedUser = await users.updateOne(query, updateDocument);
+    res.send(insertedUser);
+  } finally {
+    await client.close();
+  }
+});
+
+//UPDATE USER
+app.put("/update-user", async (req, res) => {
+  const client = new MongoClient(uri);
+  const formData = req.body.formData;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const query = { user_id: formData.user_id };
+    const user = await users.findOne(query)
+
+    const updateDocument = {
+      $set: {
+        first_name: formData?.first_name ? formData.first_name : user.first_name,
+        dob_day: formData?.dob_day ? formData.dob_day : user.dob_day,
+        dob_month: formData?.dob_month ? formData.dob_month : user.dob_month,
+        dob_year: formData?.dob_year ? formData.dob_year : user.dob_year,
+        show_gender: formData?.show_gender  ? formData.show_gender : user.show_gender,
+        url: formData?.url ? formData.url : user.url,
+        user_name: formData?.user_name ? formData.user_name : user.user_name,
+        address: formData?.address ? formData.address : user.address,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
