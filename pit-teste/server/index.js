@@ -28,45 +28,64 @@ app.post("/signup", async (req, res) => {
   const regx =
     /^([ a-z\d][a-z\d_\-.]+[a-z\d]){1,10}@(gmail)\.[a-z]{2,10}(\.[a-z]{2,20})?$/gm;
 
-
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
     const existingUser = await users.findOne({ email });
-    const verificationCode = crypto.randomBytes(4).toString('hex')
+    const verificationCode = crypto.randomBytes(4).toString("hex");
 
     if (existingUser) {
       return res.status(409).send("Usuário já cadastrado! Faça login!");
     }
 
-    if(!regx.test(email)) {
-      return res.status(409).send("Email Inválido! O único domínio compatível é Gmail!");
+    if (!regx.test(email)) {
+      return res
+        .status(409)
+        .send("Email Inválido! O único domínio compatível é Gmail!");
+    }
+
+    // Verificação de segurança da senha
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .send("Senha fraca! A senha deve ter no mínimo 6 caracteres.");
+    }
+
+    if (password === email) {
+      return res
+        .status(400)
+        .send("Senha inválida! A senha não pode ser igual ao email.");
+    }
+
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).send("Senha fraca! A senha deve conter pelo menos um número, uma letra e um caractere especial.");
     }
 
     const transporter = nodemailer.createTransport({
-      service:'gmail',
+      service: "gmail",
       auth: {
-        user:"pitpetmatch@gmail.com",
-        pass:"pcnxlfabwlqssefq"
-      }
-    })
+        user: "pitpetmatch@gmail.com",
+        pass: "pcnxlfabwlqssefq",
+      },
+    });
 
     const mailOptions = {
-      from: 'phenrigoncalves@gmail.com',
+      from: "phenrigoncalves@gmail.com",
       to: email,
       subject: "Verificação de Email PetMatch",
-      text: `Seu código de verificação é ${verificationCode}`
-    }
+      text: `Seu código de verificação é ${verificationCode}`,
+    };
 
-    transporter.sendMail(mailOptions)
+    transporter.sendMail(mailOptions);
 
     const sanitizedEmail = email.toLowerCase();
     const data = {
       user_id: generateUserID,
       email: sanitizedEmail,
       hash_passwd: hashedPassword,
-      verificationCode: verificationCode
+      verificationCode: verificationCode,
     };
 
     const insertedUser = await users.insertOne(data);
@@ -75,11 +94,14 @@ app.post("/signup", async (req, res) => {
       expiresIn: 60 * 24,
     });
 
-    res.status(201).json({ token, userId: generateUserID, verificationCode });
+    res
+      .status(201)
+      .json({ token, userId: generateUserID, verificationCode });
   } catch (err) {
     console.log(err);
   }
 });
+
 
 //LOGIN
 app.post("/login", async (req, res) => {
@@ -270,12 +292,26 @@ app.put("/addmatch", async (req, res) => {
     const users = database.collection("users");
 
     const query = { user_id: userId };
-    const updateDocument = {
-      $push: { matches: { user_id: matchedUserId } },
-    };
+    const user = await users.findOne(query);
 
-    const user = await users.updateOne(query, updateDocument);
-    res.send(user);
+    if (user.matches.some((match) => match.user_id === matchedUserId)) {
+      res.send("O matchedUserId já existe no array matches.");
+    } else {
+      const updateQuery = {
+        user_id: userId,
+        matches: { $ne: { user_id: matchedUserId } },
+      };
+      const updateDocument = {
+        $push: { matches: { user_id: matchedUserId } },
+      };
+
+      const result = await users.updateOne(updateQuery, updateDocument);
+      if (result.modifiedCount === 1) {
+        res.send("Usuário atualizado com sucesso.");
+      } else {
+        res.send("Falha ao atualizar o usuário.");
+      }
+    }
   } finally {
     await client.close();
   }

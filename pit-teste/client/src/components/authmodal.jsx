@@ -12,6 +12,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [showAuthModal, setShowAuthModal] = useState(null);
   const [error, setError] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(null);
+  const [passwordStrength, setPasswordStrength] = useState("");
 
   let navigate = useNavigate();
 
@@ -55,6 +56,25 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
     }
   };
 
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+
+    // Verificação da força da senha em tempo real
+    if (value.length < 6) {
+      setPasswordStrength("Senha Fraca");
+    } else if (value === email) {
+      setPasswordStrength("Senha Inválida!");
+    } else {
+      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
+      if (passwordRegex.test(value)) {
+        setPasswordStrength("Senha Forte");
+      } else {
+        setPasswordStrength("Senha Mediana");
+      }
+    }
+  };
+
   return (
     <div>
       <motion.div
@@ -87,7 +107,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
             name="password"
             placeholder="Senha"
             required
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handlePasswordChange}
           />
           {isSignUp && (
             <input
@@ -133,6 +153,8 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
           </>
         )}
         <p className="text-red-600 pt-5">{error}</p>
+        <p className={passwordStrength == "Senha Fraca" ? "text-red-600 pt-5" : passwordStrength == "Senha Mediana" ? "text-yellow-600 pt-5" : passwordStrength == "Senha Forte" ? "text-green-600 pt-5" :"hidden" }>{passwordStrength}</p>
+        
       </motion.div>
 
       {showAuthModal && <Verificationmodal setShowAuthModal = {showAuthModal} />}
