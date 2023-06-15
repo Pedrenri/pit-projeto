@@ -140,6 +140,8 @@ const Onboarding = () => {
                 value={formData.dob_year}
                 onChange={handleChange}
                 maxLength="4"
+                max="2007"
+                min="1900"
                 onInput={maxLengthCheck}
                 className="w-4/12 md:w-1/5"
               />
