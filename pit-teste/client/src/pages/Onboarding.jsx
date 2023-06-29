@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [formData, setFormData] = useState({
@@ -34,7 +35,10 @@ const Onboarding = () => {
     } catch (err) {
       console.log(err);
     }
+
+    navigate('/verification')
   };
+
 
   const handleChange = (e) => {
     console.log("e", e);
@@ -194,10 +198,12 @@ const Onboarding = () => {
                 <img src={formData.url} alt="profile-pic-preview" />
               )}
             </div>
-            <input type="submit" className="w-11/12 " />
+             <input type="submit" className="w-11/12"  /> 
+            
           </section>
           
         </form>
+
       </div>
     </>
   );

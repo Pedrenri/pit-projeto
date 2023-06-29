@@ -1,13 +1,16 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React from 'react';
 
-const Verificationmodal = ({ setShowAuthModal }) => {
-  return <motion.div>
-    <form action="">
-        <input type="text" />
-        <input type="submit" />
-    </form>
-  </motion.div>;
+
+const VerificationModal = () => {
+  return (
+    <div className="modal-wrapper">
+      <div className="modal-content">
+        <h2>Verificação de E-mail</h2>
+        <p>Por favor, insira seu endereço de e-mail para continuar:</p>
+        <input type="email" placeholder="Digite seu e-mail" />
+      </div>
+    </div>
+  );
 };
 
-export default Verificationmodal;
+export default VerificationModal;

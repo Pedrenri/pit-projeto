@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import Verificationmodal from "./verificationmodal";
+
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
@@ -13,6 +13,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [error, setError] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [passwordStrength, setPasswordStrength] = useState("");
+  const [showModal, setShowVerModal] = useState(true);
 
   let navigate = useNavigate();
 
@@ -41,12 +42,13 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       setCookie("AuthToken", response.data.token);
       setCookie("UserId", response.data.userId);
       const hasUsername = response.data.userName
+      const isVerified = response.data.isVerified
 
       const success = response.status === 201;
 
       if (success && isSignUp || success && !isSignUp && !hasUsername) navigate("/onboarding");
-      /* if (success && !isSignUp && !hasUsername) navigate("/onboarding"); */
       if (success && !isSignUp && hasUsername) navigate("/dashboard");
+      if (success && !isVerified) navigate('/verification')
     
 
       window.location.reload();
@@ -72,6 +74,16 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       } else {
         setPasswordStrength("Senha Mediana");
       }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      await axios.post("http://localhost:8000/forgot-password", { email });
+      window.alert("Um email de redefinição de senha foi enviado para o seu endereço de email!");
+    } catch (error) {
+      console.log(error);
+      setError(error.response.data.message);
     }
   };
 
@@ -147,17 +159,16 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
                 Cadastre-se!
               </a>
             </p>
-            <a href="#" className="text-purple-600 underline">
+            <a href="#" className="text-purple-600 underline" onClick={handleForgotPassword}>
               Esqueceu sua senha?
             </a>
           </>
         )}
         <p className="text-red-600 pt-5">{error}</p>
-        <p className={passwordStrength == "Senha Fraca" ? "text-red-600 pt-5" : passwordStrength == "Senha Mediana" ? "text-yellow-600 pt-5" : passwordStrength == "Senha Forte" ? "text-green-600 pt-5" :"hidden" }>{passwordStrength}</p>
+        {isSignUp && <p className={passwordStrength === "Senha Fraca" ? "text-red-600 pt-5" : passwordStrength === "Senha Mediana" ? "text-yellow-600 pt-5" : passwordStrength === "Senha Forte" ? "text-green-600 pt-5" :"hidden" }>{passwordStrength}</p>}
         
       </motion.div>
 
-      {showAuthModal && <Verificationmodal setShowAuthModal = {showAuthModal} />}
     </div>
   );
 };

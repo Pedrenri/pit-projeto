@@ -346,3 +346,46 @@ nav .nav-button:disabled {
   border-radius: 3.5rem;
   overflow: hidden;
 }
+
+/* AUTHENTICATION MODAL */
+
+.modal-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background-color: #f6f1fe;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.modal-wrapper h2 {
+  color: #6f42c1;
+}
+
+.modal-wrapper p {
+  color: #6f42c1;
+  margin-bottom: 10px;
+}
+
+.modal-wrapper input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.modal-wrapper button {
+  background-color: #6f42c1;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+

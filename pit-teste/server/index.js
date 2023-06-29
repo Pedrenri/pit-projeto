@@ -60,7 +60,7 @@ app.post("/signup", async (req, res) => {
 
     const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
     if (!passwordRegex.test(password)) {
-      return res.status(400).send("Senha fraca! A senha deve conter pelo menos um número, uma letra e um caractere especial.");
+      return res.status(400).send("Senha fraca demais! A senha deve conter pelo menos um número, uma letra e um caractere especial.");
     }
 
     const transporter = nodemailer.createTransport({
@@ -86,6 +86,7 @@ app.post("/signup", async (req, res) => {
       email: sanitizedEmail,
       hash_passwd: hashedPassword,
       verificationCode: verificationCode,
+      isVerified : false
     };
 
     const insertedUser = await users.insertOne(data);
@@ -142,7 +143,7 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-      res.status(201).json({ token, userId: user.user_id, userName: user.user_name });
+      res.status(201).json({ token, userId: user.user_id, userName: user.user_name, isVerified: user.isVerified  });
     } else res.status(400).send("Senha inválida");
 
   } catch (err) {
@@ -249,6 +250,38 @@ app.put("/user", async (req, res) => {
   }
 });
 
+//VERIFICATION
+app.post("/verification", async (req, res) => {
+  /* const userVerificationCode = req.body.verificationCode;
+  const userId = req.cookies.userId; // Altere para o nome correto do cookie armazenado no navegador */
+  const { userId, verificationCode } = req.body;
+  console.log(userId)
+  console.log(verificationCode)
+
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const query = { user_id: userId };
+    const user = await users.findOne(query);
+
+    if (user && verificationCode === user.verificationCode) {
+      // Atualize a propriedade isVerified para true no banco de dados
+      await users.updateOne(query, { $set: { isVerified: true } });
+      res.status(200).json({ message: 'Código de verificação correto!' });
+    } else {
+      res.status(400).json({ message: 'Código de verificação incorreto!' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao verificar o código de verificação.' });
+  } finally {
+    client.close();
+  }
+});
+
 //UPDATE USER
 app.put("/update-user", async (req, res) => {
   const client = new MongoClient(uri);
@@ -316,5 +349,113 @@ app.put("/addmatch", async (req, res) => {
     await client.close();
   }
 });
+
+//Função que gera senha aleatória
+function gerarSenha() {
+  const caracteresEspeciais = '!@#$%^&*()_+-=';
+  const letrasMinusculas = 'abcdefghijklmnopqrstuvwxyz';
+  const letrasMaiusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const numeros = '0123456789';
+
+  let senha = '';
+
+  // Adicionar um caracter especial
+  senha += caracteresEspeciais[Math.floor(Math.random() * caracteresEspeciais.length)];
+
+  // Adicionar uma letra maiúscula
+  senha += letrasMaiusculas[Math.floor(Math.random() * letrasMaiusculas.length)];
+
+  // Adicionar um número
+  senha += numeros[Math.floor(Math.random() * numeros.length)];
+
+  // Adicionar uma letra minúscula
+  senha += letrasMinusculas[Math.floor(Math.random() * letrasMinusculas.length)];
+
+  // Gerar o restante da senha
+  const caracteresRestantes = caracteresEspeciais + letrasMinusculas + letrasMaiusculas + numeros;
+  while (senha.length < 6) {
+    senha += caracteresRestantes[Math.floor(Math.random() * caracteresRestantes.length)];
+  }
+
+  // Embaralhar a senha para torná-la mais aleatória
+  senha = shuffleString(senha);
+
+  return senha;
+}
+
+// Função para embaralhar uma string
+function shuffleString(string) {
+  const array = string.split('');
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array.join('');
+}
+
+// FORGOT PASSWORD
+app.post("/forgot-password", async (req, res) => {
+  const client = new MongoClient(uri);
+  const { email } = req.body;
+  const newPassword = gerarSenha();
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  const regx =
+    /^([ a-z\d][a-z\d_\-.]+[a-z\d]){1,10}@(gmail)\.[a-z]{2,10}(\.[a-z]{2,20})?$/gm;
+
+  const user_name = email;
+  const testEmail = regx.test(email);
+
+  const checkUsername = () => {
+    if (testEmail) {
+      return true;
+    } else return false;
+  };
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    let user = await users.findOne({ email })
+
+    if (!checkUsername()) {
+      user = await users.findOne({ user_name });
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado!" });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "pitpetmatch@gmail.com",
+        pass: "pcnxlfabwlqssefq",
+      },
+    });
+
+    const mailOptions = {
+      from: "phenrigoncalves@gmail.com",
+      to: email,
+      subject: "Redefinição de senha PetMatch",
+      text: `Sua nova senha é: ${newPassword}`,
+    };
+
+    transporter.sendMail(mailOptions);
+
+    const userId = user.user_id;
+    const query = {user_id : userId}
+
+    await users.updateOne(query, {$set :{hash_passwd: hashedPassword}});
+
+    res.status(200).json({ message: "E-mail de redefinição de senha enviado!" });
+  } catch (error) {
+    console.log(error)
+  } finally {
+    client.close();
+  }
+});
+
 
 app.listen(PORT, () => console.log("Server running on PORT" + PORT));
