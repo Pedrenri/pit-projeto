@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import UpdateAcc from "../pages/UpdateAccount";
+import UpdateAcc from "./UpdateAccount";
+
 
 const ChatHeader = ({ user }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [wasClicked, setWasclicked] = useState(false);
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -15,9 +16,8 @@ const ChatHeader = ({ user }) => {
     window.location.reload();
   };
   const changeUser = () => {
-   setShowModal(true)
-  }
-
+    setShowModal(true);
+  };
 
   return (
     <div className="chat-container-header">
@@ -27,10 +27,11 @@ const ChatHeader = ({ user }) => {
         </div>
         <h3>{user.user_name}</h3>
       </div>
+      
       <i className="log-out-icon" onClick={logout} title="Sair">
         ⇦
       </i>
-      {showModal && <UpdateAcc/>}
+      {showModal && user && <UpdateAcc setShowModal={setShowModal} />}
     </div>
   );
 };

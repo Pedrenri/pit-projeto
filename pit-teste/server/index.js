@@ -5,11 +5,11 @@ const { v4: uuidv4 } = require("uuid");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer")
-const crypto = require('crypto')
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+require('dotenv').config()
 
-const uri =
-  "mongodb+srv://phenrigoncalves:Pperafa19@pit.kibo8j6.mongodb.net/?retryWrites=true&w=majority";
+const uri = process.env.URI
 
 const app = express();
 app.use(cors());
@@ -58,9 +58,14 @@ app.post("/signup", async (req, res) => {
         .send("Senha inválida! A senha não pode ser igual ao email.");
     }
 
-    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
+    const passwordRegex =
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
     if (!passwordRegex.test(password)) {
-      return res.status(400).send("Senha fraca demais! A senha deve conter pelo menos um número, uma letra e um caractere especial.");
+      return res
+        .status(400)
+        .send(
+          "Senha fraca demais! A senha deve conter pelo menos um número, uma letra e um caractere especial."
+        );
     }
 
     const transporter = nodemailer.createTransport({
@@ -72,7 +77,7 @@ app.post("/signup", async (req, res) => {
     });
 
     const mailOptions = {
-      from: "phenrigoncalves@gmail.com",
+      from: "pitpetmatch@gmail.com",
       to: email,
       subject: "Verificação de Email PetMatch",
       text: `Seu código de verificação é ${verificationCode}`,
@@ -86,7 +91,7 @@ app.post("/signup", async (req, res) => {
       email: sanitizedEmail,
       hash_passwd: hashedPassword,
       verificationCode: verificationCode,
-      isVerified : false
+      isVerified: false,
     };
 
     const insertedUser = await users.insertOne(data);
@@ -95,14 +100,11 @@ app.post("/signup", async (req, res) => {
       expiresIn: 60 * 24,
     });
 
-    res
-      .status(201)
-      .json({ token, userId: generateUserID, verificationCode });
+    res.status(201).json({ token, userId: generateUserID, verificationCode });
   } catch (err) {
     console.log(err);
   }
 });
-
 
 //LOGIN
 app.post("/login", async (req, res) => {
@@ -125,7 +127,7 @@ app.post("/login", async (req, res) => {
     const database = client.db("app-data");
     const users = database.collection("users");
 
-    let user = await users.findOne({ email })
+    let user = await users.findOne({ email });
 
     if (!checkUsername()) {
       user = await users.findOne({ user_name });
@@ -143,9 +145,15 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-      res.status(201).json({ token, userId: user.user_id, userName: user.user_name, isVerified: user.isVerified  });
+      res
+        .status(201)
+        .json({
+          token,
+          userId: user.user_id,
+          userName: user.user_name,
+          isVerified: user.isVerified,
+        });
     } else res.status(400).send("Senha inválida");
-
   } catch (err) {
     console.log(err);
   }
@@ -163,7 +171,7 @@ app.get("/user", async (req, res) => {
 
     const query = { user_id: userId };
     const user = await users.findOne(query);
-    
+
     res.send(user);
   } finally {
     await client.close();
@@ -174,7 +182,7 @@ app.get("/user", async (req, res) => {
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
-  console.log(userIds);
+  
 
   try {
     await client.connect();
@@ -192,7 +200,7 @@ app.get("/users", async (req, res) => {
     ];
 
     const foundUsers = await users.aggregate(pipeLine).toArray();
-    console.log(foundUsers);
+    
     res.send(foundUsers);
   } finally {
     await client.close();
@@ -255,8 +263,6 @@ app.post("/verification", async (req, res) => {
   /* const userVerificationCode = req.body.verificationCode;
   const userId = req.cookies.userId; // Altere para o nome correto do cookie armazenado no navegador */
   const { userId, verificationCode } = req.body;
-  console.log(userId)
-  console.log(verificationCode)
 
   const client = new MongoClient(uri);
 
@@ -271,12 +277,14 @@ app.post("/verification", async (req, res) => {
     if (user && verificationCode === user.verificationCode) {
       // Atualize a propriedade isVerified para true no banco de dados
       await users.updateOne(query, { $set: { isVerified: true } });
-      res.status(200).json({ message: 'Código de verificação correto!' });
+      res.status(200).json({ message: "Código de verificação correto!" });
     } else {
-      res.status(400).json({ message: 'Código de verificação incorreto!' });
+      res.status(400).json({ message: "Código de verificação incorreto!" });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao verificar o código de verificação.' });
+    res
+      .status(500)
+      .json({ message: "Erro ao verificar o código de verificação." });
   } finally {
     client.close();
   }
@@ -293,15 +301,19 @@ app.put("/update-user", async (req, res) => {
     const users = database.collection("users");
 
     const query = { user_id: formData.user_id };
-    const user = await users.findOne(query)
+    const user = await users.findOne(query);
 
     const updateDocument = {
       $set: {
-        first_name: formData?.first_name ? formData.first_name : user.first_name,
+        first_name: formData?.first_name
+          ? formData.first_name
+          : user.first_name,
         dob_day: formData?.dob_day ? formData.dob_day : user.dob_day,
         dob_month: formData?.dob_month ? formData.dob_month : user.dob_month,
         dob_year: formData?.dob_year ? formData.dob_year : user.dob_year,
-        show_gender: formData?.show_gender  ? formData.show_gender : user.show_gender,
+        show_gender: formData?.show_gender
+          ? formData.show_gender
+          : user.show_gender,
         url: formData?.url ? formData.url : user.url,
         user_name: formData?.user_name ? formData.user_name : user.user_name,
         address: formData?.address ? formData.address : user.address,
@@ -352,29 +364,36 @@ app.put("/addmatch", async (req, res) => {
 
 //Função que gera senha aleatória
 function gerarSenha() {
-  const caracteresEspeciais = '!@#$%^&*()_+-=';
-  const letrasMinusculas = 'abcdefghijklmnopqrstuvwxyz';
-  const letrasMaiusculas = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const numeros = '0123456789';
+  const caracteresEspeciais = "!@#$%^&*()_+-=";
+  const letrasMinusculas = "abcdefghijklmnopqrstuvwxyz";
+  const letrasMaiusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numeros = "0123456789";
 
-  let senha = '';
+  let senha = "";
 
   // Adicionar um caracter especial
-  senha += caracteresEspeciais[Math.floor(Math.random() * caracteresEspeciais.length)];
+  senha +=
+    caracteresEspeciais[Math.floor(Math.random() * caracteresEspeciais.length)];
 
   // Adicionar uma letra maiúscula
-  senha += letrasMaiusculas[Math.floor(Math.random() * letrasMaiusculas.length)];
+  senha +=
+    letrasMaiusculas[Math.floor(Math.random() * letrasMaiusculas.length)];
 
   // Adicionar um número
   senha += numeros[Math.floor(Math.random() * numeros.length)];
 
   // Adicionar uma letra minúscula
-  senha += letrasMinusculas[Math.floor(Math.random() * letrasMinusculas.length)];
+  senha +=
+    letrasMinusculas[Math.floor(Math.random() * letrasMinusculas.length)];
 
   // Gerar o restante da senha
-  const caracteresRestantes = caracteresEspeciais + letrasMinusculas + letrasMaiusculas + numeros;
+  const caracteresRestantes =
+    caracteresEspeciais + letrasMinusculas + letrasMaiusculas + numeros;
   while (senha.length < 6) {
-    senha += caracteresRestantes[Math.floor(Math.random() * caracteresRestantes.length)];
+    senha +=
+      caracteresRestantes[
+        Math.floor(Math.random() * caracteresRestantes.length)
+      ];
   }
 
   // Embaralhar a senha para torná-la mais aleatória
@@ -385,12 +404,12 @@ function gerarSenha() {
 
 // Função para embaralhar uma string
 function shuffleString(string) {
-  const array = string.split('');
+  const array = string.split("");
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
-  return array.join('');
+  return array.join("");
 }
 
 // FORGOT PASSWORD
@@ -417,7 +436,7 @@ app.post("/forgot-password", async (req, res) => {
     const database = client.db("app-data");
     const users = database.collection("users");
 
-    let user = await users.findOne({ email })
+    let user = await users.findOne({ email });
 
     if (!checkUsername()) {
       user = await users.findOne({ user_name });
@@ -445,17 +464,82 @@ app.post("/forgot-password", async (req, res) => {
     transporter.sendMail(mailOptions);
 
     const userId = user.user_id;
-    const query = {user_id : userId}
+    const query = { user_id: userId };
 
-    await users.updateOne(query, {$set :{hash_passwd: hashedPassword}});
+    await users.updateOne(query, { $set: { hash_passwd: hashedPassword } });
 
-    res.status(200).json({ message: "E-mail de redefinição de senha enviado!" });
+    res
+      .status(200)
+      .json({ message: "E-mail de redefinição de senha enviado!" });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   } finally {
     client.close();
   }
 });
 
+// GET MESSAGES
+app.get("/messages", async (req, res) => {
+  const client = new MongoClient(uri);
+  const {userId, correspondingUserId} = req.query
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const messages = database.collection("messages");
+    const query = {
+      from_userId: userId,
+      to_userId: correspondingUserId,
+    };
+    const foundMessages = await messages.find(query).toArray();
+    res.send(foundMessages);
+  } finally {
+    await client.close();
+  }
+});
+
+// ADD MESSAGE
+app.post("/message", async (req,res) => {
+  const client = new MongoClient(uri)
+  const message = req.body.message
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const messages = database.collection("messages");
+
+    const insertedMessage = await messages.insertOne(message)
+    res.send(insertedMessage)
+  } finally {
+    await client.close()
+  }
+})
+
+// ADD PET
+app.put("/pet", async (req, res) => {
+  const client = new MongoClient(uri);
+  const formData = req.body.formData;
+  const generatePetID = uuidv4();
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const pet = database.collection("pet");
+
+    const insertDocument = {
+        id: generatePetID,
+        owner_id: formData.owner_id,
+        name: formData.name,
+        age: formData.age,
+        gender: formData.gender,
+        breed: formData.breed,
+        url: formData.url
+    };
+    const insertedUser = await pet.insertOne(insertDocument)
+    res.send(insertedUser);
+  } finally {
+    await client.close();
+  }
+});
 
 app.listen(PORT, () => console.log("Server running on PORT" + PORT));

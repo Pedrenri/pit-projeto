@@ -1,7 +1,7 @@
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Onboarding from './pages/Onboarding'
-import UpdateAcc from './pages/UpdateAccount'
+import PetRegister from './pages/PetRegister'
 import VerificationForm from './pages/Verification'
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import { useCookies } from 'react-cookie'
@@ -16,8 +16,8 @@ const App = () => {
       <Route path='/' element={<Home/>}/>
       {authToken && <Route path='/dashboard' element={<Dashboard/>}/>}
       {authToken && <Route path='/onboarding' element={<Onboarding/>}/>}
-      {authToken && <Route path='/updateAccount' element={<UpdateAcc/>}/>}
       {authToken && <Route path='/verification' element={<VerificationForm/>}/>}
+      {authToken && <Route path='/petreg' element={<PetRegister/>}/>}
     </Routes>
     </BrowserRouter>
   );

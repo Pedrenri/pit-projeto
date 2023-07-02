@@ -6,6 +6,7 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
+  const [pet, setPet] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [genderedUsers, setGenderedUsers] = useState(null);
   const [lastDirection, setLastDirection] = useState();
@@ -22,6 +23,8 @@ const Dashboard = () => {
     }
   };
 
+  
+
   const getGenderedUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8000/gendered-users", {
@@ -36,7 +39,7 @@ const Dashboard = () => {
   useEffect(() => {
     getUser();
     getGenderedUsers();
-  }, [user, genderedUsers]);
+  }, []);
 
   const updateMatches = async (matchedUserId) => {
     try {
@@ -91,13 +94,14 @@ const Dashboard = () => {
                   </div>
                 </TinderCard>
               ))}
-              <div className="swipe-info">
-                {lastDirection ? <p>You swiped {lastDirection}</p> : <p />}
-              </div>
+              {!filteredGenderedUsers && <p>Ops! Parece que você já viu tudo aqui!</p>}
             </div>
           </div>
         </div>
+        
       )}
+
+      
     </>
   );
 };

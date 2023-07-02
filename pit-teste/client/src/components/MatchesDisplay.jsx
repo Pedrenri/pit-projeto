@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
-const MatchesDisplay = ({ matches }) => {
+const MatchesDisplay = ({ matches, setClickedUser }) => {
   const matchedUserIds = matches.map(({ user_id }) => user_id);
+  const [cookies, setCookie, removeCookie] = useCookies(null);
   const [matchedProfiles, setMatchedProfiles] = useState(null);
+  const userId = cookies.UserId;
 
   const getMatches = async () => {
     try {
@@ -12,7 +15,6 @@ const MatchesDisplay = ({ matches }) => {
         params: { userIds: JSON.stringify(matchedUserIds) },
       });
       setMatchedProfiles(response.data);
-      console.log(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -20,14 +22,22 @@ const MatchesDisplay = ({ matches }) => {
 
   useEffect(() => {
     getMatches();
-  }, []);
+  }, [matches]);
 
-  
+  const filteredMatchedProfiles = matchedProfiles?.filter(
+    (matchedProfile) => (matchedProfile) =>
+      matchedProfile.matches.filter((profile) => profile.user_id == "").lenght >
+      0
+  );
 
   return (
     <div className="matches-display">
-      {matchedProfiles?.map((match, _index) => (
-        <div key={{ _index }} className="match-card">
+      {filteredMatchedProfiles?.map((match, _index) => (
+        <div
+          key={{ _index }}
+          className="match-card"
+          onClick={() => setClickedUser(match)}
+        >
           <div className="img-container">
             <img src={match?.url} alt={match?.user_name + "profile"} />
           </div>

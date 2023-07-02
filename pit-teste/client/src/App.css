@@ -126,7 +126,6 @@ nav .nav-button:disabled {
 /* ----- ONBOARDING ----- */
 
 .onboarding {
-  border-top: solid 1px rgb(154, 154, 154);
   padding-top: 20px;
 }
 
@@ -252,20 +251,28 @@ nav .nav-button:disabled {
   width: 30%;
   text-align: left;
   z-index: 1;
+  display: grid;
+  grid-template-rows: 100px 80px 1fr 200px;
 }
 
 .chat-container .chat-container-header {
-  background: linear-gradient(45deg, rgb(254, 48, 114), rgb(255, 89, 64));
+  background: rgb(202, 55, 255);
+  background: radial-gradient(
+    circle,
+    rgba(202, 55, 255, 1) 0%,
+    rgba(130, 29, 255, 1) 100%
+  );
   height: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 80px;
 }
 
 .chat-container .option {
   border: none;
   background-color: white;
-  border-bottom: solid 4px rgb(243, 33, 33);
+  border-bottom: solid 4px rgb(107, 33, 243);
   font-size: 20px;
   margin: 2px;
   padding: 10px;
@@ -277,11 +284,14 @@ nav .nav-button:disabled {
 
 .chat-container .profile,
 .chat-container .log-out-icon {
-  padding: 20px;
   display: flex;
   align-items: center;
   color: white;
   font-weight: 800;
+}
+
+.profile:hover {
+  cursor: pointer;
 }
 
 .log-out-icon:hover {
@@ -315,14 +325,21 @@ nav .nav-button:disabled {
   flex-direction: column;
 }
 
+textarea {
+  padding: 10px;
+  resize: none;
+  border-radius: 20px;
+}
+
 /* UPDATE MODAL */
 
 .updateModal {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(50% - 45rem / 2 );
-  max-width: 400px;
+  top: 50%;
+  translate: 0 -50%;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
@@ -331,11 +348,9 @@ nav .nav-button:disabled {
   box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
-  overflow: scroll;
 }
 
 .updateModal form input {
-  width: 100%;
   padding: 5px;
   border-radius: 5px;
 }
@@ -345,6 +360,10 @@ nav .nav-button:disabled {
   height: 7rem;
   border-radius: 3.5rem;
   overflow: hidden;
+}
+
+.updateModal .photo-container img {
+  width: 100%;
 }
 
 /* AUTHENTICATION MODAL */
@@ -387,5 +406,118 @@ nav .nav-button:disabled {
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* ----- MATCHES DISPLAY ----- */
+
+.match-card {
+  border-bottom: solid 2px #eee;
+  padding: 20px;
+  transition: ease 0.2s;
+  display: flex;
+  align-items: center;
+  column-gap: 2rem;
+}
+
+.match-card:hover {
+  cursor: pointer;
+  background-color: #eeeeee;
+}
+
+/* ----- CHAT DISPLAY ----- */
+
+.chat-message-header {
+  display: flex;
+  align-items: center;
+}
+
+.chat-message-header .img-container {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.chat-message-header p {
+  background-color: rgb(243, 243, 243);
+  color: #343037;
+  padding: 7px 10px;
+  border-radius: 10px;
+}
+
+.chat-display .user {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.chat-display .user p {
+  color: white;
+  background: rgb(169, 55, 255);
+  background: linear-gradient(
+    0deg,
+    rgba(169, 55, 255, 1) 0%,
+    rgba(130, 29, 255, 1) 100%
+  );
+}
+
+/* ADD PET */
+
+.add-pet {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  justify-self: end;
+}
+
+.add-pet img {
+  width: 90px;
+}
+
+.chat-container-header img {
+  width: 90px;
+}
+
+.chat-container-header a {
+  justify-self: center;
+}
+
+/* VERIFICATION */
+
+.verification {
+  background: url('./assets/homebg.png');
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.input-holder {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  height:20rem;
+  border-radius: 30px;
+  justify-content: space-around;
+  align-items: center;
+}
+.input-holder button {
+  background: rgb(169, 55, 255);
+  background: linear-gradient(
+    0deg,
+    rgba(169, 55, 255, 1) 0%,
+    rgba(130, 29, 255, 1) 100%
+  );
+  padding: 7px 15px;
+  color: white;
+  border-radius: 10px;
+}
+
+.input-holder input {
+  border: none;
+  border-bottom: solid 2px #6f42c1;
+  width: 50%;
+  padding: 5px 10px;
 }
 
