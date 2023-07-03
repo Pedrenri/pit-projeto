@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [formData, setFormData] = useState({
@@ -13,13 +12,13 @@ const Onboarding = () => {
     dob_day: "",
     dob_month: "",
     dob_year: "",
-    show_gender: false,
     gender_identity: "man",
     url: "",
     matches: [],
-    user_name:"",
-    address: ""
+    user_name: "",
+    address: "",
   });
+  const [error, setError] = useState(null);
 
   let navigate = useNavigate();
 
@@ -34,9 +33,9 @@ const Onboarding = () => {
       if (success) navigate("/verification");
     } catch (err) {
       console.log(err);
+      setError(err.response.data);
     }
   };
-
 
   const handleChange = (e) => {
     console.log("e", e);
@@ -83,18 +82,18 @@ const Onboarding = () => {
               onChange={handleChange}
             />
 
-<label htmlFor="first_name">Nome de Usuário</label>
+            <label htmlFor="first_name">Nome de Usuário</label>
             <input
               type="text"
               id="user_name"
               name="user_name"
-              placeholder="Nome de Usuário"
+              placeholder="Nome de Usuário (NÃO PODE SER MUDADO!)"
               required
               value={formData.user_name}
               onChange={handleChange}
             />
 
-<label htmlFor="first_name">Endereço</label>
+            <label htmlFor="first_name">Endereço</label>
             <input
               type="text"
               id="address"
@@ -169,16 +168,6 @@ const Onboarding = () => {
               />
               <label htmlFor="woman_gender_id">Feminino</label>
             </div>
-            <label htmlFor="show-gender">Exibir gênero no perfil?</label>
-            <input
-              type="checkbox"
-              id="show-gender"
-              name="show_gender"
-              onChange={handleChange}
-              checked={formData.show_gender}
-            />
-
-            
           </section>
 
           <section className="w-full md:w-4/12 flex items-center ">
@@ -196,12 +185,10 @@ const Onboarding = () => {
                 <img src={formData.url} alt="profile-pic-preview" />
               )}
             </div>
-             <input type="submit" className="w-11/12"  /> 
-            
+            <input type="submit" className="w-11/12" />
+            {error && <p>{error}</p>}
           </section>
-          
         </form>
-
       </div>
     </>
   );

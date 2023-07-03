@@ -25,9 +25,9 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
   }, [matches]);
 
   const filteredMatchedProfiles = matchedProfiles?.filter(
-    (matchedProfile) => (matchedProfile) =>
-      matchedProfile.matches.filter((profile) => profile.user_id == "").lenght >
-      0
+    (matchedProfile) =>
+      matchedProfile.matches.filter((profile) => profile.user_id == userId)
+        .length > 0
   );
 
   return (

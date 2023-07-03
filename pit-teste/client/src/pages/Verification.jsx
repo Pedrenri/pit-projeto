@@ -40,7 +40,7 @@ function VerificationForm() {
         />
         <motion.button
           initial={{ scale: 1 }}
-          whileHover={{ scale: 1.05, transition: { duration: 0.1 } }}
+          whileTap={{ scale: 0.95, transition: { duration: 0.1 } }}
           transition={{ ease: "easeInOut" }}
           onClick={handleVerification}
         >

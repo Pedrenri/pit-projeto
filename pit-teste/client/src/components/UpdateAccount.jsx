@@ -11,7 +11,7 @@ const UpdateAcc = ({ setShowModal }) => {
   const [user, setUser] = useState(null);
 
   const userId = cookies.UserId;
- /*  const getUser = async () => {
+  /*  const getUser = async () => {
     try {
       const response = await axios.get("http://localhost:8000/user", {
         params: { userId },
@@ -50,7 +50,6 @@ const UpdateAcc = ({ setShowModal }) => {
     show_gender: user?.show_gender,
     url: user?.url,
     matches: user?.matches,
-    user_name: user?.user_name,
     address: user?.address,
   });
 
@@ -101,7 +100,7 @@ const UpdateAcc = ({ setShowModal }) => {
         initial={{ y: 500 }}
         animate={{ y: 0 }}
         exit={{ y: 500 }}
-        className="updateModal flex flex-col justify-around items-center"
+        className="updateModal flex flex-col gap-y-4 justify-around items-center"
       >
         <div className="close-icon self-end" onClick={handleClick}>
           ⓧ
@@ -116,110 +115,92 @@ const UpdateAcc = ({ setShowModal }) => {
         <form
           action=""
           onSubmit={handleSubmit}
-          className="flex justify-center flex-col items-between gap-y-4"
+          className="flex justify-center flex-col items-between gap-y-4 pb-8"
         >
-          <div className="flex gap-x-8">
-            <div className="flex flex-col">
-              <label htmlFor="first_name">Nome completo</label>
-              <input
-                type="text"
-                id="first_name"
-                name="first_name"
-                placeholder={user?.first_name}
-                defaultValue={user?.full_name}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="first_name">Nome de Usuário</label>
-              <input
-                type="text"
-                id="user_name"
-                name="user_name"
-                placeholder={user?.user_name}
-                value={formData?.user_name}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-          <div className="flex gap-x-8">
-            <div className="flex flex-col">
-              <label htmlFor="first_name">Endereço</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                placeholder={user?.address}
-                value={formData?.address}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label>Data de Nascimento</label>
-              <div className="multInputContainer flex justify-center gap-x-4">
+          <div className="flex gap-x-8 ">
+            <div className="flex  flex-col gap-y-8">
+              <div className="flex flex-col">
+                <label htmlFor="first_name">Nome completo</label>
                 <input
-                  type="number"
-                  id="dob_day"
-                  name="dob_day"
-                  placeholder={user?.dob_day}
-                  value={formData?.dob_day}
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  placeholder={user?.first_name}
+                  defaultValue={user?.full_name}
                   onChange={handleChange}
-                  max="31"
-                  maxLength="2"
-                  onInput={maxLengthCheck}
-                  className="w-10"
                 />
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="first_name">Endereço</label>
                 <input
-                  type="number"
-                  id="dob_month"
-                  name="dob_month"
-                  placeholder={user?.dob_month}
-                  value={formData?.dob_month}
+                  type="text"
+                  id="address"
+                  name="address"
+                  placeholder={user?.address}
+                  value={formData?.address}
                   onChange={handleChange}
-                  max="12"
-                  maxLength="2"
-                  onInput={maxLengthCheck}
-                  className="w-10"
-                />
-                <input
-                  type="number"
-                  id="dob_year"
-                  name="dob_year"
-                  placeholder={user?.dob_year}
-                  value={formData?.dob_year}
-                  onChange={handleChange}
-                  maxLength="4"
-                  onInput={maxLengthCheck}
-                  className="w-20"
                 />
               </div>
             </div>
-          </div>
-          <div className="flex gap-x-8 items-center ">
-            <div className="flex flex-col">
-              <label htmlFor="url">Foto de Perfil</label>
-              <input
-                type="url"
-                name="url"
-                id="url"
-                onChange={handleChange}
-                className="w-full"
-                placeholder={user?.url}
-                value={formData?.url}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="show-gender">Exibir gênero no perfil?</label>
-              <input
-                type="checkbox"
-                id="show-gender"
-                name="show_gender"
-                onChange={handleChange}
-                checked={formData?.show_gender}
-              />
-            </div>
-          </div>
+            <div className="flex flex-col gap-y-8">
+              <div className="flex flex-col">
+                <label>Data de Nascimento</label>
+                <div className="multInputContainer flex justify-center gap-x-4">
+                  <input
+                    type="number"
+                    id="dob_day"
+                    name="dob_day"
+                    placeholder={user?.dob_day}
+                    value={formData?.dob_day}
+                    onChange={handleChange}
+                    max="31"
+                    maxLength="2"
+                    onInput={maxLengthCheck}
+                    className="w-10"
+                  />
+                  <input
+                    type="number"
+                    id="dob_month"
+                    name="dob_month"
+                    placeholder={user?.dob_month}
+                    value={formData?.dob_month}
+                    onChange={handleChange}
+                    max="12"
+                    maxLength="2"
+                    onInput={maxLengthCheck}
+                    className="w-10"
+                  />
+                  <input
+                    type="number"
+                    id="dob_year"
+                    name="dob_year"
+                    placeholder={user?.dob_year}
+                    value={formData?.dob_year}
+                    onChange={handleChange}
+                    maxLength="4"
+                    onInput={maxLengthCheck}
+                    className="w-20"
+                  />
+                </div>
+              </div>
 
+              <div className="flex gap-x-8 items-center ">
+                <div className="flex flex-col">
+                  <label htmlFor="url">Foto de Perfil</label>
+                  <input
+                    type="url"
+                    name="url"
+                    id="url"
+                    onChange={handleChange}
+                    className="w-full"
+                    placeholder={user?.url}
+                    value={formData?.url}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
           <input
             type="submit"
             className="w-11/12 self-center"

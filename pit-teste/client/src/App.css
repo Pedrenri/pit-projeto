@@ -199,6 +199,7 @@ nav .nav-button:disabled {
 .dashboard {
   display: flex;
   justify-content: space-between;
+  background: url(./assets/homebg.png);
 }
 
 .dashboard .swipe-container {
@@ -253,6 +254,7 @@ nav .nav-button:disabled {
   z-index: 1;
   display: grid;
   grid-template-rows: 100px 80px 1fr 200px;
+  border-right: solid 2px darkslategrey;
 }
 
 .chat-container .chat-container-header {
@@ -339,15 +341,19 @@ textarea {
   right: 0;
   top: 50%;
   translate: 0 -50%;
-  max-width: 800px;
+  max-width: 500px;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
   border-radius: 10px;
-  padding: 2.5rem;
   box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 1px 1px 50px -4px rgba(0, 0, 0, 0.3);
+}
+
+.updateModal .close-icon {
+  padding-right: 1rem;
+  padding-top: 1rem;
 }
 
 .updateModal form input {
@@ -510,7 +516,7 @@ textarea {
     rgba(130, 29, 255, 1) 100%
   );
   padding: 7px 15px;
-  color: white;
+  color: #fafafa;
   border-radius: 10px;
 }
 

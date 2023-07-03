@@ -7,9 +7,9 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-require('dotenv').config()
+require("dotenv").config();
 
-const uri = process.env.URI
+const uri = process.env.URI;
 
 const app = express();
 app.use(cors());
@@ -59,7 +59,7 @@ app.post("/signup", async (req, res) => {
     }
 
     const passwordRegex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&;-_])[a-zA-Z\d@$!%*#?&;-_]+$/;
     if (!passwordRegex.test(password)) {
       return res
         .status(400)
@@ -145,14 +145,12 @@ app.post("/login", async (req, res) => {
       const token = jwt.sign(user, email, {
         expiresIn: 60 * 24,
       });
-      res
-        .status(201)
-        .json({
-          token,
-          userId: user.user_id,
-          userName: user.user_name,
-          isVerified: user.isVerified,
-        });
+      res.status(201).json({
+        token,
+        userId: user.user_id,
+        userName: user.user_name,
+        isVerified: user.isVerified,
+      });
     } else res.status(400).send("Senha inválida");
   } catch (err) {
     console.log(err);
@@ -182,7 +180,6 @@ app.get("/user", async (req, res) => {
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
-  
 
   try {
     await client.connect();
@@ -200,7 +197,7 @@ app.get("/users", async (req, res) => {
     ];
 
     const foundUsers = await users.aggregate(pipeLine).toArray();
-    
+
     res.send(foundUsers);
   } finally {
     await client.close();
@@ -211,16 +208,14 @@ app.get("/users", async (req, res) => {
 app.get("/gendered-users", async (req, res) => {
   const client = new MongoClient(uri);
   const gender = req.query.gender;
-  const genderQuery = gender == "woman" ? "man" : "woman";
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
-    const query = { gender_identity: genderQuery };
+    const query = { gender_identity: { $eq: gender } };
     const foundUsers = await users.find(query).toArray();
-
-    res.send(foundUsers);
+    res.json(foundUsers);
   } finally {
     await client.close();
   }
@@ -230,11 +225,18 @@ app.get("/gendered-users", async (req, res) => {
 app.put("/user", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
+  const userName = formData.user_name;
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
+    const existingUser = await users.findOne({ user_name: userName });
+    console.log(existingUser)
+
+    if (existingUser) {
+      return res.status(409).send("Este nome de usuário já está em uso!");
+    }
 
     const query = { user_id: formData.user_id };
     const updateDocument = {
@@ -243,12 +245,12 @@ app.put("/user", async (req, res) => {
         dob_day: formData.dob_day,
         dob_month: formData.dob_month,
         dob_year: formData.dob_year,
-        show_gender: formData.show_gender,
         gender_identity: formData.gender_identity,
         url: formData.url,
         matches: formData.matches,
         user_name: formData.user_name,
         address: formData.address,
+        gender_interest: formData.gender_identity == "woman" ? "man" : "woman",
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
@@ -311,11 +313,7 @@ app.put("/update-user", async (req, res) => {
         dob_day: formData?.dob_day ? formData.dob_day : user.dob_day,
         dob_month: formData?.dob_month ? formData.dob_month : user.dob_month,
         dob_year: formData?.dob_year ? formData.dob_year : user.dob_year,
-        show_gender: formData?.show_gender
-          ? formData.show_gender
-          : user.show_gender,
         url: formData?.url ? formData.url : user.url,
-        user_name: formData?.user_name ? formData.user_name : user.user_name,
         address: formData?.address ? formData.address : user.address,
       },
     };
@@ -481,7 +479,7 @@ app.post("/forgot-password", async (req, res) => {
 // GET MESSAGES
 app.get("/messages", async (req, res) => {
   const client = new MongoClient(uri);
-  const {userId, correspondingUserId} = req.query
+  const { userId, correspondingUserId } = req.query;
 
   try {
     await client.connect();
@@ -499,24 +497,24 @@ app.get("/messages", async (req, res) => {
 });
 
 // ADD MESSAGE
-app.post("/message", async (req,res) => {
-  const client = new MongoClient(uri)
-  const message = req.body.message
+app.post("/message", async (req, res) => {
+  const client = new MongoClient(uri);
+  const message = req.body.message;
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const messages = database.collection("messages");
 
-    const insertedMessage = await messages.insertOne(message)
-    res.send(insertedMessage)
+    const insertedMessage = await messages.insertOne(message);
+    res.send(insertedMessage);
   } finally {
-    await client.close()
+    await client.close();
   }
-})
+});
 
 // ADD PET
-app.put("/pet", async (req, res) => {
+app.put("/addpet", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
   const generatePetID = uuidv4();
@@ -527,15 +525,16 @@ app.put("/pet", async (req, res) => {
     const pet = database.collection("pet");
 
     const insertDocument = {
-        id: generatePetID,
-        owner_id: formData.owner_id,
-        name: formData.name,
-        age: formData.age,
-        gender: formData.gender,
-        breed: formData.breed,
-        url: formData.url
+      id: generatePetID,
+      owner_id: formData.owner_id,
+      name: formData.name,
+      age: formData.age,
+      gender_identity: formData.gender,
+      breed: formData.breed,
+      url: formData.url,
+      gender_interest: formData.gender == "male" ? "female" : "male",
     };
-    const insertedUser = await pet.insertOne(insertDocument)
+    const insertedUser = await pet.insertOne(insertDocument);
     res.send(insertedUser);
   } finally {
     await client.close();

@@ -1,19 +1,16 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
-  const [showAuthModal, setShowAuthModal] = useState(null);
   const [error, setError] = useState(null);
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [showModal, setShowVerModal] = useState(true);
 
   let navigate = useNavigate();
 
@@ -41,15 +38,15 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
       setCookie("AuthToken", response.data.token);
       setCookie("UserId", response.data.userId);
-      const hasUsername = response.data.userName
-      const isVerified = response.data.isVerified
+      const hasUsername = response.data.userName;
+      const isVerified = response.data.isVerified;
 
       const success = response.status === 201;
 
-      if (success && isSignUp || success && !isSignUp && !hasUsername) navigate("/onboarding");
+      if ((success && isSignUp) || (success && !isSignUp && !hasUsername))
+        navigate("/onboarding");
       if (success && !isSignUp && hasUsername) navigate("/dashboard");
-      if (success && !isVerified && !isSignUp) navigate('/verification')
-    
+      if (success && !isVerified && !isSignUp) navigate("/verification");
 
       window.location.reload();
     } catch (error) {
@@ -68,7 +65,8 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
     } else if (value === email) {
       setPasswordStrength("Senha Inválida!");
     } else {
-      const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
+      const passwordRegex =
+        /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&])[a-zA-Z\d@$!%*#?&]+$/;
       if (passwordRegex.test(value)) {
         setPasswordStrength("Senha Forte");
       } else {
@@ -80,7 +78,9 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const handleForgotPassword = async () => {
     try {
       await axios.post("http://localhost:8000/forgot-password", { email });
-      window.alert("Um email de redefinição de senha foi enviado para o seu endereço de email!");
+      window.alert(
+        "Um email de redefinição de senha foi enviado para o seu endereço de email!"
+      );
     } catch (error) {
       console.log(error);
       setError(error.response.data.message);
@@ -88,12 +88,12 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   };
 
   return (
-    <div>
+    <AnimatePresence>
       <motion.div
         key="modal"
-        initial={{ y: 500 }}
-        animate={{ y: 0 }}
-        exit={{ y: 500 }}
+        initial={{ y: 500, opacity: 0.7 }}
+        animate={{ y: setShowModal ? 0 : 500, opacity: 1 }}
+        exit={{ y: 500, opacity: 0 }}
         className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
       >
         <div className="close-icon float-right" onClick={handleClick}>
@@ -159,17 +159,33 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
                 Cadastre-se!
               </a>
             </p>
-            <a href="#" className="text-purple-600 underline" onClick={handleForgotPassword}>
+            <a
+              href="#"
+              className="text-purple-600 underline"
+              onClick={handleForgotPassword}
+            >
               Esqueceu sua senha?
             </a>
           </>
         )}
         <p className="text-red-600 pt-5">{error}</p>
-        {isSignUp && <p className={passwordStrength === "Senha Fraca" ? "text-red-600 pt-5" : passwordStrength === "Senha Mediana" ? "text-yellow-600 pt-5" : passwordStrength === "Senha Forte" ? "text-green-600 pt-5" :"hidden" }>{passwordStrength}</p>}
-        
+        {isSignUp && (
+          <p
+            className={
+              passwordStrength === "Senha Fraca"
+                ? "text-red-600 pt-5"
+                : passwordStrength === "Senha Mediana"
+                ? "text-yellow-600 pt-5"
+                : passwordStrength === "Senha Forte"
+                ? "text-green-600 pt-5"
+                : "hidden"
+            }
+          >
+            {passwordStrength}
+          </p>
+        )}
       </motion.div>
-
-    </div>
+    </AnimatePresence>
   );
 };
 

@@ -23,12 +23,10 @@ const Dashboard = () => {
     }
   };
 
-  
-
   const getGenderedUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8000/gendered-users", {
-        params: { gender: user?.gender_identity },
+        params: { gender: user?.gender_interest },
       });
       setGenderedUsers(response.data);
     } catch (error) {
@@ -38,8 +36,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     getUser();
-    getGenderedUsers();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      getGenderedUsers();
+    }
+  }, [user]);
 
   const updateMatches = async (matchedUserId) => {
     try {
@@ -94,14 +97,13 @@ const Dashboard = () => {
                   </div>
                 </TinderCard>
               ))}
-              {!filteredGenderedUsers && <p>Ops! Parece que você já viu tudo aqui!</p>}
+              {!filteredGenderedUsers && (
+                <p>Ops! Parece que você já viu tudo aqui!</p>
+              )}
             </div>
           </div>
         </div>
-        
       )}
-
-      
     </>
   );
 };
