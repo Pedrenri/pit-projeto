@@ -86,7 +86,7 @@ app.post("/signup", async (req, res) => {
     }
 
     const passwordRegex =
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&;-_])[a-zA-Z\d@$!%*#?&;-_]+$/;
+      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*#?&;-_.])[a-zA-Z\d@$!%*#?&;-_.]+$/;
     if (!passwordRegex.test(password)) {
       return res
         .status(400)
