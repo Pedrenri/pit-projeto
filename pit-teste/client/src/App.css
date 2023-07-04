@@ -449,6 +449,8 @@ textarea {
   color: #343037;
   padding: 7px 10px;
   border-radius: 10px;
+  max-width: 60%;
+  word-wrap: break-word ;
 }
 
 .chat-display .user {

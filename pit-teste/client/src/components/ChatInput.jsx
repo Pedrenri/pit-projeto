@@ -1,40 +1,44 @@
-import React from 'react'
-import { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const ChatInput = ({user, clickedUser, getUsersMessages, getClickedUsersMessages}) => {
+const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessages }) => {
+  const [textArea, setTextArea] = useState(null);
+  const userId = user?.user_id;
+  const clickedUserId = clickedUser?.user_id;
 
-    const [textArea, setTextArea] = useState(null)
-    const userId = user?.user_id
-    const clickedUserId = clickedUser?.user_id
+  const addMessage = async () => {
+    const message = {
+      timestamp: new Date().toISOString(),
+      from_userId: userId,
+      to_userId: clickedUserId,
+      message: textArea,
+    };
 
-    const addMessage = async () => {
-        const message = {
-            timestamp: new Date().toISOString(),
-            from_userId: userId,
-            to_userId: clickedUserId,
-            message:textArea
-        }
-
-        try {
-            await axios.post('http://localhost:8000/message', {message})
-            getUsersMessages()
-            getClickedUsersMessages()
-            setTextArea("")
-        } catch (err) {
-            console.log(err)
-        }
+    try {
+      await axios.post('http://localhost:8000/message', { message });
+      getUsersMessages();
+      getClickedUsersMessages();
+      setTextArea('');
+    } catch (err) {
+      console.log(err);
     }
-    
+  };
 
-    return (
-        <div className="chat-input">
-            <textarea value={textArea} onChange={(e) => setTextArea(e.target.value)}/>
-            <button className="secondary-button" onClick={addMessage} disabled={textArea?false:true}>
-                Enviar
-            </button>
-        </div>
-    )
-}
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      addMessage();
+    }
+  };
 
-export default ChatInput
+  return (
+    <div className="chat-input">
+      <textarea value={textArea} onChange={(e) => setTextArea(e.target.value)} onKeyDown={handleKeyDown} />
+      <button className="secondary-button" onClick={addMessage} disabled={!textArea}>
+        Enviar
+      </button>
+    </div>
+  );
+};
+
+export default ChatInput;
