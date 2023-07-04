@@ -9,22 +9,10 @@ import { motion } from "framer-motion";
 const UpdateAcc = ({ setShowModal }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState(null);
+  const [animals, setAnimals] = useState([]);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
 
   const userId = cookies.UserId;
-  /*  const getUser = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/user", {
-        params: { userId },
-      });
-      setUser(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
- */
-  /* useEffect(() => {
-    getUser();
-  }, []); */
 
   useEffect(() => {
     const getUser = async () => {
@@ -39,6 +27,21 @@ const UpdateAcc = ({ setShowModal }) => {
     };
 
     getUser();
+  }, [userId]);
+
+  useEffect(() => {
+    const getAnimals = async () => {
+      try {
+        const response = await axios.get("http://localhost:8000/animals", {
+          params: { userId },
+        });
+        setAnimals(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAnimals();
   }, [userId]);
 
   const [formData, setFormData] = useState({
@@ -68,8 +71,31 @@ const UpdateAcc = ({ setShowModal }) => {
     }
   };
 
+  const handleDelete = async () => {
+    setShowConfirmModal(true); // Show the confirmation modal
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await axios.delete("http://localhost:8000/user", {
+        params: { userId },
+      });
+
+      if (response.status === 200) {
+        navigate("/");
+        removeCookie("UserId", cookies.UserId);
+        removeCookie("AuthToken", cookies.AuthToken);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      navigate("/");
+        removeCookie("UserId", cookies.UserId);
+        removeCookie("AuthToken", cookies.AuthToken);
+    }
+  };
+
   const handleChange = (e) => {
-    console.log("e", e);
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
@@ -95,6 +121,46 @@ const UpdateAcc = ({ setShowModal }) => {
 
   return (
     <>
+      {showConfirmModal && (
+        <div className="modal-overlay">
+          <motion.div
+            initial={{ y: 500 }}
+            animate={{ y: 0 }}
+            exit={{ y: 500 }}
+            className="modal-content"
+          >
+            <h2>Confirmar exclusão de conta</h2>
+            <p>
+              Tem certeza de que quer excluir sua conta? Todos os dados de seu
+              usuário e de seus pets serão apagados.
+            </p>
+            <ul>
+              {animals.map((animal) => (
+                <li key={animal.id}>{animal.name}</li>
+              ))}
+            </ul>
+            <div className="modal-buttons">
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.01 }}
+                className="delete-button"
+                onClick={confirmDelete}
+              >
+                Sim, desejo excluir minha conta
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.01 }}
+                className="cancel-button"
+                onClick={() => setShowConfirmModal(false)}
+              >
+                Cancelar
+              </motion.button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
       <motion.div
         key="modal"
         initial={{ y: 500 }}
@@ -117,8 +183,10 @@ const UpdateAcc = ({ setShowModal }) => {
           onSubmit={handleSubmit}
           className="flex justify-center flex-col items-between gap-y-4 pb-8"
         >
-          <div className="flex gap-x-8 ">
+          {/* Form fields */}
+          <div className="flex gap-x-8">
             <div className="flex  flex-col gap-y-8">
+              {/* Name field */}
               <div className="flex flex-col">
                 <label htmlFor="first_name">Nome completo</label>
                 <input
@@ -131,6 +199,7 @@ const UpdateAcc = ({ setShowModal }) => {
                 />
               </div>
 
+              {/* Address field */}
               <div className="flex flex-col">
                 <label htmlFor="first_name">Endereço</label>
                 <input
@@ -144,6 +213,7 @@ const UpdateAcc = ({ setShowModal }) => {
               </div>
             </div>
             <div className="flex flex-col gap-y-8">
+              {/* Date of Birth fields */}
               <div className="flex flex-col">
                 <label>Data de Nascimento</label>
                 <div className="multInputContainer flex justify-center gap-x-4">
@@ -185,7 +255,8 @@ const UpdateAcc = ({ setShowModal }) => {
                 </div>
               </div>
 
-              <div className="flex gap-x-8 items-center ">
+              {/* Profile Picture field */}
+              <div className="flex gap-x-8 items-center">
                 <div className="flex flex-col">
                   <label htmlFor="url">Foto de Perfil</label>
                   <input
@@ -201,12 +272,26 @@ const UpdateAcc = ({ setShowModal }) => {
               </div>
             </div>
           </div>
-          <input
-            type="submit"
-            className="w-11/12 self-center"
-            onSubmit={handleChange}
-            value="Atualizar"
-          />
+
+          {/* Submit and Delete Account buttons */}
+          <div className="flex gap-x-8">
+            <motion.input
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.01 }}
+              type="submit"
+              className="w-11/12 self-center"
+              onSubmit={handleChange}
+              value="Atualizar"
+            />
+            <motion.button
+              className="w-1/2 bg-red-600 rounded-md text-white"
+              onClick={handleDelete}
+              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.01 }}
+            >
+              Excluir Conta
+            </motion.button>
+          </div>
         </form>
       </motion.div>
     </>

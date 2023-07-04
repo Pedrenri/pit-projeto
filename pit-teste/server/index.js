@@ -19,6 +19,33 @@ app.get("/", (req, res) => {
   res.json("Hello to my app");
 });
 
+// DELETE USER
+app.delete("/user", async (req, res) => {
+  const client = new MongoClient(uri);
+  const userId = req.query.userId;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+    const pets = database.collection("pet")
+
+    const query = { user_id: userId };
+    const petQuery = {owner_id: userId}
+    const result = await users.deleteOne(query);
+    const resultPets = await pets.deleteMany({owner_id : userId})
+
+    if (result.deletedCount === 1 && resultPets ) {
+      res.status(200).json({ message: "Usuário excluído com sucesso." });
+    } else {
+      res.status(404).json({ message: "Usuário não encontrado." });
+    }
+  } finally {
+    await client.close();
+  }
+});
+
+
 // SIGNUP
 app.post("/signup", async (req, res) => {
   const client = new MongoClient(uri);
