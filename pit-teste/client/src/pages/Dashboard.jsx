@@ -1,7 +1,9 @@
 import TinderCard from "react-tinder-card";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import ChatContainer from "../components/ChatContainer.jsx";
+import { ChatIcon } from "@heroicons/react/outline"; // Importe o ícone do Heroicons
+import ChatContainer from "../components/ChatContainer"
+
 import axios from "axios";
 
 const Dashboard = () => {
@@ -10,6 +12,7 @@ const Dashboard = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [genderedUsers, setGenderedUsers] = useState(null);
   const [lastDirection, setLastDirection] = useState();
+  const [isChatOpen, setIsChatOpen] = useState(false); // Estado para controlar se o ChatContainer está aberto
 
   const userId = cookies.UserId;
   const getUser = async () => {
@@ -75,12 +78,28 @@ const Dashboard = () => {
     (genderedUser) => !matchedUserIds?.includes(genderedUser.user_id)
   );
 
+  const handleChatToggle = () => {
+    setIsChatOpen(!isChatOpen);
+  };
+
+  const canShowChat = isChatOpen || window.innerWidth > 768
+  console.log(canShowChat)
+  const canShowbutton = window.innerWidth > 768
+
   return (
     <>
       {user && (
         <div className="dashboard">
-          <ChatContainer user={user} />
-          <div className="swipe-container">
+          {canShowChat  && <ChatContainer user={user} />} {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
+          <div className="fixed top-4 left-4 z-50"> {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
+            {!canShowbutton && <button
+              className="p-2 bg-gray-500 text-white rounded-full focus:outline-none"
+              onClick={handleChatToggle} // Alterne o estado isChatOpen quando o botão for clicado
+            >
+              <ChatIcon className="w-6 h-6" /> {/* Adicione o ícone do Chat usando o Heroicons */}
+            </button> }
+          </div>
+          <div className="swipe-container w-full">
             <div className="card-container">
               {filteredGenderedUsers?.map((character) => (
                 <TinderCard
@@ -91,7 +110,7 @@ const Dashboard = () => {
                 >
                   <div
                     style={{ backgroundImage: "url(" + character.url + ")" }}
-                    className="card"
+                    className="card w-72 md:w-96 h-96"
                   >
                     <h3>{character.user_name}</h3>
                   </div>
