@@ -268,7 +268,7 @@ app.put("/user", async (req, res) => {
     const query = { user_id: formData.user_id };
     const updateDocument = {
       $set: {
-        first_name: formData.first_name,
+        full_name: formData.full_name,
         birth_date: formData.birth_date,
         gender_identity: formData.gender_identity,
         matches: formData.matches,
