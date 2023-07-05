@@ -1,8 +1,10 @@
 import TinderCard from "react-tinder-card";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { ChatIcon } from "@heroicons/react/outline"; // Importe o ícone do Heroicons
+import { MenuIcon } from "@heroicons/react/outline"; // Importe o ícone do Heroicons
 import ChatContainer from "../components/ChatContainer"
+
+
 
 import axios from "axios";
 
@@ -93,10 +95,10 @@ const Dashboard = () => {
           {canShowChat  && <ChatContainer user={user} />} {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
           <div className="fixed top-4 left-4 z-50"> {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
             {!canShowbutton && <button
-              className="p-2 bg-gray-500 text-white rounded-full focus:outline-none"
+              className="p-2 text-white rounded-full focus:outline-none"
               onClick={handleChatToggle} // Alterne o estado isChatOpen quando o botão for clicado
             >
-              <ChatIcon className="w-6 h-6" /> {/* Adicione o ícone do Chat usando o Heroicons */}
+              <MenuIcon className="w-6 h-6" /> {/* Adicione o ícone do Chat usando o Heroicons */}
             </button> }
           </div>
           <div className="swipe-container w-full">
