@@ -3,17 +3,16 @@ import Nav from "../components/Nav";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { format, isValid } from 'date-fns';
+
 
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [formData, setFormData] = useState({
     user_id: cookies.UserId,
     full_name: "",
-    dob_day: "",
-    dob_month: "",
-    dob_year: "",
+    birth_date: "",
     gender_identity: "man",
-    url: "",
     matches: [],
     user_name: "",
     address: "",
@@ -38,16 +37,26 @@ const Onboarding = () => {
   };
 
   const handleChange = (e) => {
-    console.log("e", e);
-    const value =
-      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
-
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  
+    if (name === "birth_date") {
+      const inputDate = new Date(value);
+      if (!isNaN(inputDate.getTime())) {
+        const formattedDate = inputDate.toISOString().split("T")[0];
+        setFormData((prevState) => ({
+          ...prevState,
+          birth_date: formattedDate,
+        }));
+      }
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
@@ -74,15 +83,15 @@ const Onboarding = () => {
             <label htmlFor="first_name">Nome completo</label>
             <input
               type="text"
-              id="first_name"
-              name="first_name"
+              id="full_name"
+              name="full_name"
               placeholder="Nome Completo"
               required
-              value={formData.first_name}
+              value={formData.full_name}
               onChange={handleChange}
             />
 
-            <label htmlFor="first_name">Nome de Usuário</label>
+            <label htmlFor="user_name">Nome de Usuário</label>
             <input
               type="text"
               id="user_name"
@@ -93,7 +102,7 @@ const Onboarding = () => {
               onChange={handleChange}
             />
 
-            <label htmlFor="first_name">Endereço</label>
+            <label htmlFor="address">Endereço</label>
             <input
               type="text"
               id="address"
@@ -107,44 +116,13 @@ const Onboarding = () => {
             <label>Data de Nascimento</label>
             <div className="multInputContainer justify-center md:justify-start">
               <input
-                type="number"
-                id="dob_day"
-                name="dob_day"
-                placeholder="DD"
+                type="date"
+                id="birth_date"
+                name="birth_date"
                 required
-                value={formData.dob_day}
+                value={formData.birth_date}
                 onChange={handleChange}
-                max="31"
-                maxLength="2"
-                onInput={maxLengthCheck}
-                className="w-4/12 md:w-1/5"
-              />
-              <input
-                type="number"
-                id="dob_month"
-                name="dob_month"
-                placeholder="MM"
-                required
-                value={formData.dob_month}
-                onChange={handleChange}
-                max="12"
-                maxLength="2"
-                onInput={maxLengthCheck}
-                className="w-4/12 md:w-1/5"
-              />
-              <input
-                type="number"
-                id="dob_year"
-                name="dob_year"
-                placeholder="YYYY"
-                required
-                value={formData.dob_year}
-                onChange={handleChange}
-                maxLength="4"
-                max="2007"
-                min="1900"
-                onInput={maxLengthCheck}
-                className="w-4/12 md:w-1/5"
+                className="w-4/12 md:w-full"
               />
             </div>
             <label>Sexo</label>
@@ -168,23 +146,8 @@ const Onboarding = () => {
               />
               <label htmlFor="woman_gender_id">Feminino</label>
             </div>
-          </section>
-
-          <section className="w-full md:w-4/12 flex items-center ">
-            <label htmlFor="url">Foto de Perfil</label>
-            <input
-              type="url"
-              name="url"
-              id="url"
-              onChange={handleChange}
-              required
-              className="w-full"
-            />
-            <div className="photo-container">
-              {formData.url && (
-                <img src={formData.url} alt="profile-pic-preview" />
-              )}
-            </div>
+          
+            
             <input type="submit" className="w-11/12" />
             {error && <p>{error}</p>}
           </section>
