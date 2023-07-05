@@ -10,7 +10,7 @@ const ChatContainer = ({ user }) => {
 
   return (
     <motion.div
-      initial={{ x: -100 }}
+      initial={{ x: -500 }}
       animate={{ x: 0, transition: {duration: 0.5} }}
       className="chat-container w-full absolute md:static h-full md:h-screen md:w-1/2 lg:w-2/5 xl:w-3/12"
     >
