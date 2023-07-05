@@ -31,11 +31,11 @@ app.delete("/user", async (req, res) => {
     const pets = database.collection("pet")
 
     const query = { user_id: userId };
-    const petQuery = {owner_id: userId}
+    const petQuery = { owner_id: userId }
     const result = await users.deleteOne(query);
-    const resultPets = await pets.deleteMany({owner_id : userId})
+    const resultPets = await pets.deleteMany({ owner_id: userId })
 
-    if (result.deletedCount === 1 && resultPets ) {
+    if (result.deletedCount === 1 && resultPets) {
       res.status(200).json({ message: "Usuário excluído com sucesso." });
     } else {
       res.status(404).json({ message: "Usuário não encontrado." });
@@ -269,11 +269,8 @@ app.put("/user", async (req, res) => {
     const updateDocument = {
       $set: {
         first_name: formData.first_name,
-        dob_day: formData.dob_day,
-        dob_month: formData.dob_month,
-        dob_year: formData.dob_year,
+        birth_date: formData.birth_date,
         gender_identity: formData.gender_identity,
-        url: formData.url,
         matches: formData.matches,
         user_name: formData.user_name,
         address: formData.address,
@@ -337,9 +334,7 @@ app.put("/update-user", async (req, res) => {
         first_name: formData?.first_name
           ? formData.first_name
           : user.first_name,
-        dob_day: formData?.dob_day ? formData.dob_day : user.dob_day,
-        dob_month: formData?.dob_month ? formData.dob_month : user.dob_month,
-        dob_year: formData?.dob_year ? formData.dob_year : user.dob_year,
+        birth_date: formData?.birth_date ? formData.bith_date : user.birth_date,
         url: formData?.url ? formData.url : user.url,
         address: formData?.address ? formData.address : user.address,
       },
@@ -417,7 +412,7 @@ function gerarSenha() {
   while (senha.length < 6) {
     senha +=
       caracteresRestantes[
-        Math.floor(Math.random() * caracteresRestantes.length)
+      Math.floor(Math.random() * caracteresRestantes.length)
       ];
   }
 
