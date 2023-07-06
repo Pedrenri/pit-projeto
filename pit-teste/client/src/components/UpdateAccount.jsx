@@ -11,6 +11,8 @@ const UpdateAcc = ({ setShowModal }) => {
   const [user, setUser] = useState(null);
   const [animals, setAnimals] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
+  const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
+
 
   const userId = cookies.UserId;
 
@@ -46,13 +48,10 @@ const UpdateAcc = ({ setShowModal }) => {
 
   const [formData, setFormData] = useState({
     user_id: cookies.UserId,
-    full_name: user?.first_name,
-    dob_day: user?.dob_day,
-    dob_month: user?.dob_month,
-    dob_year: user?.dob_year,
+    full_name: user?.full_name,
+    birth_date: user?.birth_date,
     show_gender: user?.show_gender,
     url: user?.url,
-    matches: user?.matches,
     address: user?.address,
   });
 
@@ -65,7 +64,12 @@ const UpdateAcc = ({ setShowModal }) => {
         formData,
       });
       const success = response.status === 200;
-      if (success) navigate("/dashboard");
+      if (success) {
+        setUpdateSuccess(true); // Set updateSuccess to true
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 3000);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -90,8 +94,8 @@ const UpdateAcc = ({ setShowModal }) => {
       console.log(err);
     } finally {
       navigate("/");
-        removeCookie("UserId", cookies.UserId);
-        removeCookie("AuthToken", cookies.AuthToken);
+      removeCookie("UserId", cookies.UserId);
+      removeCookie("AuthToken", cookies.AuthToken);
     }
   };
 
@@ -100,10 +104,21 @@ const UpdateAcc = ({ setShowModal }) => {
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
 
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (name === "birth_date") {
+      const inputDate = new Date(value);
+      if (!isNaN(inputDate.getTime())) {
+        const formattedDate = inputDate.toISOString().split("T")[0];
+        setFormData((prevState) => ({
+          ...prevState,
+          birth_date: formattedDate,
+        }));
+      }
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const maxLengthCheck = (object) => {
@@ -188,13 +203,12 @@ const UpdateAcc = ({ setShowModal }) => {
             <div className="flex  flex-col gap-y-8">
               {/* Name field */}
               <div className="flex flex-col">
-                <label htmlFor="first_name">Nome completo</label>
+                <label htmlFor="full_name">Nome completo</label>
                 <input
                   type="text"
-                  id="first_name"
-                  name="first_name"
-                  placeholder={user?.first_name}
-                  defaultValue={user?.full_name}
+                  id="full_name"
+                  name="full_name"
+                  placeholder={user?.full_name}
                   onChange={handleChange}
                 />
               </div>
@@ -214,46 +228,6 @@ const UpdateAcc = ({ setShowModal }) => {
             </div>
             <div className="flex flex-col gap-y-8">
               {/* Date of Birth fields */}
-              <div className="flex flex-col">
-                <label>Data de Nascimento</label>
-                <div className="multInputContainer flex justify-center gap-x-4">
-                  <input
-                    type="number"
-                    id="dob_day"
-                    name="dob_day"
-                    placeholder={user?.dob_day}
-                    value={formData?.dob_day}
-                    onChange={handleChange}
-                    max="31"
-                    maxLength="2"
-                    onInput={maxLengthCheck}
-                    className="w-10"
-                  />
-                  <input
-                    type="number"
-                    id="dob_month"
-                    name="dob_month"
-                    placeholder={user?.dob_month}
-                    value={formData?.dob_month}
-                    onChange={handleChange}
-                    max="12"
-                    maxLength="2"
-                    onInput={maxLengthCheck}
-                    className="w-10"
-                  />
-                  <input
-                    type="number"
-                    id="dob_year"
-                    name="dob_year"
-                    placeholder={user?.dob_year}
-                    value={formData?.dob_year}
-                    onChange={handleChange}
-                    maxLength="4"
-                    onInput={maxLengthCheck}
-                    className="w-20"
-                  />
-                </div>
-              </div>
 
               {/* Profile Picture field */}
               <div className="flex gap-x-8 items-center">
@@ -272,6 +246,14 @@ const UpdateAcc = ({ setShowModal }) => {
               </div>
             </div>
           </div>
+
+          {updateSuccess && (
+            <div className=" flex items-center justify-center">
+              <div className="bg-green-200 text-green-800 px-4 py-2 rounded-md">
+                Atualização realizada com sucesso!
+              </div>
+            </div>
+          )}
 
           {/* Submit and Delete Account buttons */}
           <div className="flex gap-x-8">

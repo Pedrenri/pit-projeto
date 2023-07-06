@@ -331,9 +331,9 @@ app.put("/update-user", async (req, res) => {
 
     const updateDocument = {
       $set: {
-        first_name: formData?.first_name
-          ? formData.first_name
-          : user.first_name,
+        full_name: formData?.full_name
+          ? formData.full_name
+          : user.full_name,
         birth_date: formData?.birth_date ? formData.bith_date : user.birth_date,
         url: formData?.url ? formData.url : user.url,
         address: formData?.address ? formData.address : user.address,
