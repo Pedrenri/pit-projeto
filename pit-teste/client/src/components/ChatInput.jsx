@@ -33,7 +33,7 @@ const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessage
 
   return (
     <div className="chat-input">
-      <textarea value={textArea} onChange={(e) => setTextArea(e.target.value)} onKeyDown={handleKeyDown} />
+      <textarea value={textArea} placeholder='Digite algo...' onChange={(e) => setTextArea(e.target.value)} onKeyDown={handleKeyDown} />
       <button className="secondary-button" onClick={addMessage} disabled={!textArea}>
         Enviar
       </button>

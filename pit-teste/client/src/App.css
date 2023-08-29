@@ -332,7 +332,7 @@ nav .nav-button:disabled {
 textarea {
   padding: 10px;
   resize: none;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 /* UPDATE MODAL */
