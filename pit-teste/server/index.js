@@ -31,7 +31,6 @@ app.delete("/user", async (req, res) => {
     const pets = database.collection("pet")
 
     const query = { user_id: userId };
-    const petQuery = { owner_id: userId }
     const result = await users.deleteOne(query);
     const resultPets = await pets.deleteMany({ owner_id: userId })
 
@@ -39,6 +38,29 @@ app.delete("/user", async (req, res) => {
       res.status(200).json({ message: "Usuário excluído com sucesso." });
     } else {
       res.status(404).json({ message: "Usuário não encontrado." });
+    }
+  } finally {
+    await client.close();
+  }
+});
+
+// DELETE PET
+app.delete("/dog", async (req, res) => {
+  const client = new MongoClient(uri);
+  const petId = req.query.petId;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const pets = database.collection("pet")
+
+    const query = { id: petId };
+    const result = await pets.deleteOne(query);
+
+    if (result.deletedCount === 1 && resultPets) {
+      res.status(200).json({ message: "Pet excluído com sucesso." });
+    } else {
+      res.status(404).json({ message: "Pet não encontrado." });
     }
   } finally {
     await client.close();
@@ -203,6 +225,44 @@ app.get("/user", async (req, res) => {
   }
 });
 
+// GET ONE DOG
+app.get("/dog", async (req, res) => {
+  const client = new MongoClient(uri);
+  const userId = req.query.userId;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("pet");
+
+    const query = { id: userId };
+    const user = await users.findOne(query);
+
+    res.send(user);
+  } finally {
+    await client.close();
+  }
+});
+
+// GET ALL DOGS FROM USER
+app.get("/dogs", async (req, res) => {
+  const client = new MongoClient(uri);
+  const userId = req.query.userId;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("pet");
+
+    const query = { owner_id: userId };
+    const user = await users.find(query).toArray();
+
+    res.json(user);
+  } finally {
+    await client.close();
+  }
+});
+
 //Users(mapping matches or something like that I don't really get it)
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
@@ -239,7 +299,7 @@ app.get("/gendered-users", async (req, res) => {
   try {
     await client.connect();
     const database = client.db("app-data");
-    const users = database.collection("users");
+    const users = database.collection("pet");
     const query = { gender_identity: { $eq: gender } };
     const foundUsers = await users.find(query).toArray();
     res.json(foundUsers);
@@ -324,19 +384,18 @@ app.put("/update-user", async (req, res) => {
   try {
     await client.connect();
     const database = client.db("app-data");
-    const users = database.collection("users");
+    const users = database.collection("pet");
 
     const query = { user_id: formData.user_id };
     const user = await users.findOne(query);
 
     const updateDocument = {
       $set: {
-        full_name: formData?.full_name
-          ? formData.full_name
-          : user.full_name,
-        birth_date: formData?.birth_date ? formData.bith_date : user.birth_date,
+        name: formData?.name
+          ? formData.name
+          : user.name,
+        
         url: formData?.url ? formData.url : user.url,
-        address: formData?.address ? formData.address : user.address,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
@@ -354,20 +413,20 @@ app.put("/addmatch", async (req, res) => {
   try {
     await client.connect();
     const database = client.db("app-data");
-    const users = database.collection("users");
+    const users = database.collection("pet");
 
-    const query = { user_id: userId };
+    const query = { id: userId };
     const user = await users.findOne(query);
 
-    if (user.matches.some((match) => match.user_id === matchedUserId)) {
+    if (user.matches.some((match) => match.id === matchedUserId)) {
       res.send("O matchedUserId já existe no array matches.");
     } else {
       const updateQuery = {
-        user_id: userId,
-        matches: { $ne: { user_id: matchedUserId } },
+        id: userId,
+        matches: { $ne: { id: matchedUserId } },
       };
       const updateDocument = {
-        $push: { matches: { user_id: matchedUserId } },
+        $push: { matches: { id: matchedUserId } },
       };
 
       const result = await users.updateOne(updateQuery, updateDocument);
@@ -555,6 +614,7 @@ app.put("/addpet", async (req, res) => {
       breed: formData.breed,
       url: formData.url,
       gender_interest: formData.gender == "male" ? "female" : "male",
+      matches:formData.matches
     };
     const insertedUser = await pet.insertOne(insertDocument);
     res.send(insertedUser);

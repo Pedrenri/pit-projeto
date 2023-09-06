@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [formData, setFormData] = useState({
@@ -36,9 +35,10 @@ const Onboarding = () => {
   };
 
   const handleChange = (e) => {
-    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
-  
+
     if (name === "birth_date") {
       const inputDate = new Date(value);
       if (!isNaN(inputDate.getTime())) {
@@ -55,7 +55,6 @@ const Onboarding = () => {
       }));
     }
   };
-  
 
   const maxLengthCheck = (object) => {
     if (object.target.value.length > object.target.maxLength) {
@@ -112,41 +111,47 @@ const Onboarding = () => {
               onChange={handleChange}
             />
 
-            <label>Data de Nascimento</label>
-            <div className="multInputContainer justify-center md:justify-start">
-              <input
-                type="date"
-                id="birth_date"
-                name="birth_date"
-                required
-                value={formData.birth_date}
-                onChange={handleChange}
-                className="w-4/12 md:w-full"
-              />
+            <div className="multInputHolder">
+              <div>
+                <label>Data de Nascimento</label>
+                <div className="multInputContainer justify-center md:justify-start">
+                  <input
+                    type="date"
+                    id="birth_date"
+                    name="birth_date"
+                    required
+                    value={formData.birth_date}
+                    onChange={handleChange}
+                    className="w-4/12 md:w-full"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label>Sexo</label>
+                <div className="multInputContainer justify-center md:justify-start">
+                  <input
+                    type="radio"
+                    id="man_gender_id"
+                    name="gender_identity"
+                    value="man"
+                    onChange={handleChange}
+                    checked={formData.gender_identity === "man"}
+                  />
+                  <label htmlFor="man_gender_id">Masculino</label>
+                  <input
+                    type="radio"
+                    id="woman_gender_id"
+                    name="gender_identity"
+                    value="woman"
+                    onChange={handleChange}
+                    checked={formData.gender_identity === "woman"}
+                  />
+                  <label htmlFor="woman_gender_id">Feminino</label>
+                </div>
+              </div>
             </div>
-            <label>Sexo</label>
-            <div className="multInputContainer justify-center md:justify-start">
-              <input
-                type="radio"
-                id="man_gender_id"
-                name="gender_identity"
-                value="man"
-                onChange={handleChange}
-                checked={formData.gender_identity === "man"}
-              />
-              <label htmlFor="man_gender_id">Masculino</label>
-              <input
-                type="radio"
-                id="woman_gender_id"
-                name="gender_identity"
-                value="woman"
-                onChange={handleChange}
-                checked={formData.gender_identity === "woman"}
-              />
-              <label htmlFor="woman_gender_id">Feminino</label>
-            </div>
-          
-            
+
             <input type="submit" className="w-11/12" />
             {error && <p>{error}</p>}
           </section>

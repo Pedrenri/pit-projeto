@@ -9,20 +9,23 @@ import { motion } from "framer-motion";
 const UpdateAcc = ({ setShowModal }) => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState(null);
-  const [animals, setAnimals] = useState([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
   const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
 
 
   const userId = cookies.UserId;
+  console.log(cookies.UserId)
+  const petId = cookies.petID;
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/user", {
+        const response = await axios.get("http://localhost:8000/dog", {
           params: { userId },
         });
+        console.log(response.data.name)
         setUser(response.data);
+        
       } catch (error) {
         console.log(error);
       }
@@ -31,28 +34,13 @@ const UpdateAcc = ({ setShowModal }) => {
     getUser();
   }, [userId]);
 
-  useEffect(() => {
-    const getAnimals = async () => {
-      try {
-        const response = await axios.get("http://localhost:8000/animals", {
-          params: { userId },
-        });
-        setAnimals(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
 
-    getAnimals();
-  }, [userId]);
+
 
   const [formData, setFormData] = useState({
-    user_id: cookies.UserId,
-    full_name: user?.full_name,
-    birth_date: user?.birth_date,
-    show_gender: user?.show_gender,
+    id: petId,
+    name: user?.name,
     url: user?.url,
-    address: user?.address,
   });
 
   let navigate = useNavigate();
@@ -81,8 +69,8 @@ const UpdateAcc = ({ setShowModal }) => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete("http://localhost:8000/user", {
-        params: { userId },
+      const response = await axios.delete("http://localhost:8000/dog", {
+        params: { petId },
       });
 
       if (response.status === 200) {
@@ -104,30 +92,10 @@ const UpdateAcc = ({ setShowModal }) => {
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
 
-    if (name === "birth_date") {
-      const inputDate = new Date(value);
-      if (!isNaN(inputDate.getTime())) {
-        const formattedDate = inputDate.toISOString().split("T")[0];
-        setFormData((prevState) => ({
-          ...prevState,
-          birth_date: formattedDate,
-        }));
-      }
-    } else {
       setFormData((prevState) => ({
         ...prevState,
         [name]: value,
       }));
-    }
-  };
-
-  const maxLengthCheck = (object) => {
-    if (object.target.value.length > object.target.maxLength) {
-      object.target.value = object.target.value.slice(
-        0,
-        object.target.maxLength
-      );
-    }
   };
 
   const handleClick = () => {
@@ -144,16 +112,10 @@ const UpdateAcc = ({ setShowModal }) => {
             exit={{ y: 500 }}
             className="modal-content"
           >
-            <h2>Confirmar exclusão de conta</h2>
+            <h2>Confirmar exclusão de pet</h2>
             <p>
-              Tem certeza de que quer excluir sua conta? Todos os dados de seu
-              usuário e de seus pets serão apagados.
+              Tem certeza de que quer excluir seu pet? Todos os dados desse pet serão apagados.
             </p>
-            <ul>
-              {animals.map((animal) => (
-                <li key={animal.id}>{animal.name}</li>
-              ))}
-            </ul>
             <div className="modal-buttons">
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -161,7 +123,7 @@ const UpdateAcc = ({ setShowModal }) => {
                 className="delete-button"
                 onClick={confirmDelete}
               >
-                Sim, desejo excluir minha conta
+                Sim, desejo excluir meu pet
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -186,11 +148,11 @@ const UpdateAcc = ({ setShowModal }) => {
         <div className="close-icon self-end" onClick={handleClick}>
           ⓧ
         </div>
-        <h2>ATUALIZAR DADOS</h2>
+        <h2>ATUALIZAR DADOS DO PET  </h2>
         <div className="photo-container">
           <img
             src={formData?.url ? formData.url : user?.url}
-            alt="profile-pic-preview"
+            alt="profile-pic"
           />
         </div>
         <form
@@ -203,31 +165,19 @@ const UpdateAcc = ({ setShowModal }) => {
             <div className="flex  flex-col gap-y-8">
               {/* Name field */}
               <div className="flex flex-col">
-                <label htmlFor="full_name">Nome completo</label>
+                <label htmlFor="name">Nome</label>
                 <input
                   type="text"
-                  id="full_name"
-                  name="full_name"
-                  placeholder={user?.full_name}
+                  id="name"
+                  name="name"
+                  placeholder={user?.name || ''}
                   onChange={handleChange}
                 />
               </div>
 
-              {/* Address field */}
-              <div className="flex flex-col">
-                <label htmlFor="first_name">Endereço</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  placeholder={user?.address}
-                  value={formData?.address}
-                  onChange={handleChange}
-                />
-              </div>
+              
             </div>
             <div className="flex flex-col gap-y-8">
-              {/* Date of Birth fields */}
 
               {/* Profile Picture field */}
               <div className="flex gap-x-8 items-center">
@@ -271,7 +221,7 @@ const UpdateAcc = ({ setShowModal }) => {
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.01 }}
             >
-              Excluir Conta
+              Excluir Pet
             </motion.button>
           </div>
         </form>

@@ -14,6 +14,7 @@ const ChatHeader = ({ user }) => {
     navigate("/")
     removeCookie("UserId", cookies.UserId);
     removeCookie("AuthToken", cookies.AuthToken);
+    removeCookie("PetID", cookies.PetID);
     window.location.reload();
   };
   const changeUser = () => {
@@ -26,7 +27,7 @@ const ChatHeader = ({ user }) => {
         <div className="img-container">
           <img src={user.url} alt={"photo of "} />
         </div>
-        <h3>{user.user_name}</h3>
+        <h3>{user.name}</h3>
       </div>
       
       <i className="log-out-icon" onClick={logout} title="Sair">

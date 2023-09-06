@@ -12,6 +12,7 @@ const PetRegister = () => {
     age: "",
     gender: "male",
     url: "",
+    matches:[]
   });
 
   let navigate = useNavigate();
@@ -24,7 +25,7 @@ const PetRegister = () => {
       });
       console.log(response);
       const success = response.status === 200;
-      if (success) navigate("/dashboard");
+      if (success) navigate("/mypets");
     } catch (err) {
       console.log(err);
     }

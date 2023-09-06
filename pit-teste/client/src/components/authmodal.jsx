@@ -45,7 +45,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
       if ((success && isSignUp) || (success && !isSignUp && !hasUsername))
         navigate("/onboarding");
-      if (success && !isSignUp && hasUsername) navigate("/dashboard");
+      if (success && !isSignUp && hasUsername) navigate("/mypets");
       if (success && !isVerified && !isSignUp) navigate("/verification");
 
       window.location.reload();

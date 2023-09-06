@@ -16,22 +16,24 @@ const Dashboard = () => {
   const [lastDirection, setLastDirection] = useState();
   const [isChatOpen, setIsChatOpen] = useState(false); // Estado para controlar se o ChatContainer está aberto
 
-  const userId = cookies.UserId;
+  const userId = cookies.PetID;
   const getUser = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/user", {
+      const response = await axios.get("http://localhost:8000/dog", {
         params: { userId },
       });
-      setUser(response.data);
+      setPet(response.data);
     } catch (error) {
       console.log(error);
     }
   };
+  const petID = cookies.PetID;
+  console.log(pet)
 
   const getGenderedUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8000/gendered-users", {
-        params: { gender: user?.gender_interest },
+        params: { gender: pet?.gender_interest },
       });
       setGenderedUsers(response.data);
     } catch (error) {
@@ -52,7 +54,7 @@ const Dashboard = () => {
   const updateMatches = async (matchedUserId) => {
     try {
       await axios.put("http://localhost:8000/addmatch", {
-        userId,
+        petID,
         matchedUserId,
       });
       getUser();
@@ -72,12 +74,12 @@ const Dashboard = () => {
     console.log(name + " left the screen!");
   };
 
-  const matchedUserIds = user?.matches
-    .map(({ user_id }) => user_id)
-    .concat(userId);
+  const matchedUserIds = pet?.matches
+    .map(({ id }) => id)
+    .concat(petID);
 
   const filteredGenderedUsers = genderedUsers?.filter(
-    (genderedUser) => !matchedUserIds?.includes(genderedUser.user_id)
+    (genderedUser) => !matchedUserIds?.includes(genderedUser.id)
   );
 
   const handleChatToggle = () => {
@@ -90,9 +92,9 @@ const Dashboard = () => {
 
   return (
     <>
-      {user && (
+      {pet && (
         <div className="dashboard">
-          {canShowChat  && <ChatContainer user={user} />} {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
+          {canShowChat  && <ChatContainer user={pet} />} {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
           <div className="fixed top-4 left-4 z-50"> {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
             {!canShowbutton && <button
               className="p-2 text-white rounded-full focus:outline-none"

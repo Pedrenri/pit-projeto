@@ -62,6 +62,7 @@ const Home = () => {
     if (authToken) {
       removeCookie("UserId", cookies.UserId);
       removeCookie("AuthToken", cookies.AuthToken);
+      removeCookie("PetID", cookies.PetID);
       window.location.reload();
     } else {
       setShowModal(true);
