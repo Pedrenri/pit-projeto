@@ -28,7 +28,6 @@ const Dashboard = () => {
     }
   };
   const petID = cookies.PetID;
-  console.log(pet)
 
   const getGenderedUsers = async () => {
     try {
@@ -46,10 +45,10 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (pet) {
       getGenderedUsers();
     }
-  }, [user]);
+  }, [pet]);
 
   const updateMatches = async (matchedUserId) => {
     try {
@@ -78,6 +77,7 @@ const Dashboard = () => {
     .map(({ id }) => id)
     .concat(petID);
 
+
   const filteredGenderedUsers = genderedUsers?.filter(
     (genderedUser) => !matchedUserIds?.includes(genderedUser.id)
   );
@@ -87,7 +87,7 @@ const Dashboard = () => {
   };
 
   const canShowChat = isChatOpen || window.innerWidth > 768
-  console.log(canShowChat)
+  
   const canShowbutton = window.innerWidth > 768
 
   return (
@@ -108,15 +108,15 @@ const Dashboard = () => {
               {filteredGenderedUsers?.map((character) => (
                 <TinderCard
                   className="swipe"
-                  key={character.user_id}
-                  onSwipe={(dir) => swiped(dir, character.user_id)}
-                  onCardLeftScreen={() => outOfFrame(character.first_name)}
+                  key={character.id}
+                  onSwipe={(dir) => swiped(dir, character.id)}
+                  onCardLeftScreen={() => outOfFrame(character.name)}
                 >
                   <div
                     style={{ backgroundImage: "url(" + character.url + ")" }}
                     className="card w-72 md:w-96 h-96"
                   >
-                    <h3>{character.user_name}</h3>
+                    <h3 className="text-slate-500">{character.name}</h3>
                   </div>
                 </TinderCard>
               ))}

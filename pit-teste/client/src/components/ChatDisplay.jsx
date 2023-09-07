@@ -4,8 +4,8 @@ import ChatInput from "./ChatInput";
 import axios from "axios";
 
 const ChatDisplay = ({ user, clickedUser }) => {
-  const userId = user?.user_id;
-  const clickedUserId = clickedUser?.user_id;
+  const userId = user?.id;
+  const clickedUserId = clickedUser?.id;
   const [usersMessages, setUsersMessages] = useState(null);
   const [clickedUsersMessages, setClickedUsersMessages] = useState(null);
 
@@ -40,8 +40,8 @@ const ChatDisplay = ({ user, clickedUser }) => {
 
   usersMessages?.forEach((message) => {
     const formattedMessage = {};
-    formattedMessage["id"] = user?.user_id;
-    formattedMessage["name"] = user?.user_name;
+    formattedMessage["id"] = user?.id;
+    formattedMessage["name"] = user?.name;
     formattedMessage["img"] = user?.url;
     formattedMessage["message"] = message.message;
     formattedMessage["timestamp"] = message.timestamp;
@@ -50,7 +50,7 @@ const ChatDisplay = ({ user, clickedUser }) => {
 
   clickedUsersMessages?.forEach((message) => {
     const formattedMessage = {};
-    formattedMessage["name"] = clickedUser?.user_name;
+    formattedMessage["name"] = clickedUser?.name;
     formattedMessage["img"] = clickedUser?.url;
     formattedMessage["message"] = message.message;
     formattedMessage["timestamp"] = message.timestamp;

@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessages }) => {
   const [textArea, setTextArea] = useState(null);
-  const userId = user?.user_id;
-  const clickedUserId = clickedUser?.user_id;
+  const userId = user?.id;
+  const clickedUserId = clickedUser?.id;
 
   const addMessage = async () => {
     const message = {

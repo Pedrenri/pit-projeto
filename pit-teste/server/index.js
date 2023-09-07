@@ -267,16 +267,17 @@ app.get("/dogs", async (req, res) => {
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
+  
 
   try {
     await client.connect();
     const database = client.db("app-data");
-    const users = database.collection("users");
+    const users = database.collection("pet");
 
     const pipeLine = [
       {
         $match: {
-          user_id: {
+          id: {
             $in: userIds,
           },
         },
@@ -408,23 +409,23 @@ app.put("/update-user", async (req, res) => {
 // MATCHES
 app.put("/addmatch", async (req, res) => {
   const client = new MongoClient(uri);
-  const { userId, matchedUserId } = req.body;
+  const { petID, matchedUserId } = req.body;
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("pet");
 
-    const query = { id: userId };
+    const query = { id: petID };
     const user = await users.findOne(query);
 
     if (user.matches.some((match) => match.id === matchedUserId)) {
       res.send("O matchedUserId já existe no array matches.");
     } else {
       const updateQuery = {
-        id: userId,
+        id: petID,
         matches: { $ne: { id: matchedUserId } },
-      };
+      }
       const updateDocument = {
         $push: { matches: { id: matchedUserId } },
       };

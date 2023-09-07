@@ -4,10 +4,12 @@ import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 
 const MatchesDisplay = ({ matches, setClickedUser }) => {
-  const matchedUserIds = matches.map(({ user_id }) => user_id);
+  const matchedUserIds = matches.map(({ id }) => id);
   const [cookies, setCookie, removeCookie] = useCookies(null);
   const [matchedProfiles, setMatchedProfiles] = useState(null);
   const userId = cookies.UserId;
+  const petID = cookies.PetID;
+  
 
   const getMatches = async () => {
     try {
@@ -26,9 +28,13 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
 
   const filteredMatchedProfiles = matchedProfiles?.filter(
     (matchedProfile) =>
-      matchedProfile.matches.filter((profile) => profile.user_id == userId)
+      matchedProfile.matches.filter((profile) => profile.id == petID)
         .length > 0
   );
+
+  console.log(matchedProfiles)
+
+  console.log(filteredMatchedProfiles)
 
   return (
     <div className="matches-display">
@@ -39,9 +45,9 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
           onClick={() => setClickedUser(match)}
         >
           <div className="img-container">
-            <img src={match?.url} alt={match?.user_name + "profile"} />
+            <img src={match?.url} alt={match?.name + "profile"} />
           </div>
-          <h2>{match?.user_name}</h2>
+          <h2>{match?.name}</h2>
         </div>
       ))}
     </div>
