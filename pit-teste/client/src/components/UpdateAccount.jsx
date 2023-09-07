@@ -12,29 +12,24 @@ const UpdateAcc = ({ setShowModal }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
 
 
-  const userId = cookies.UserId;
-  console.log(cookies.UserId)
-  const petId = cookies.petID;
+  /* const userId = cookies.UserId; */
+  const petId = cookies.PetID;
+  console.log(petId)
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const response = await axios.get("http://localhost:8000/dog", {
-          params: { userId },
+          params: { petId: petId }
         });
         console.log(response.data.name)
         setUser(response.data);
-        
       } catch (error) {
         console.log(error);
       }
     };
-
     getUser();
-  }, [userId]);
-
-
-
+  }, [petId]);
 
   const [formData, setFormData] = useState({
     id: petId,
@@ -54,8 +49,8 @@ const UpdateAcc = ({ setShowModal }) => {
       if (success) {
         setUpdateSuccess(true); // Set updateSuccess to true
         setTimeout(() => {
-          navigate("/dashboard");
-        }, 3000);
+          window.location.reload()
+        }, 1000);
       }
     } catch (err) {
       console.log(err);

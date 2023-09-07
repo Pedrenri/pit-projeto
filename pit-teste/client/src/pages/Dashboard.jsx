@@ -20,7 +20,7 @@ const Dashboard = () => {
   const getUser = async () => {
     try {
       const response = await axios.get("http://localhost:8000/dog", {
-        params: { userId },
+        params: { petId: userId },
       });
       setPet(response.data);
     } catch (error) {
@@ -77,10 +77,12 @@ const Dashboard = () => {
     console.log(name + " left the screen!");
   };
 
-  const matchedUserIds = pet?.matches.map(({ id }) => id).concat(petID);
+  console.log(pet);
+
+  const matchedUserIds = pet?.matches?.map(({ id }) => id).concat(petID);
 
   const filteredGenderedUsers = genderedUsers?.filter(
-    (genderedUser) => !matchedUserIds?.includes(genderedUser.id)
+    (genderedUser) => !matchedUserIds.includes(genderedUser.id)
   );
 
   const handleChatToggle = () => {
@@ -88,8 +90,7 @@ const Dashboard = () => {
   };
 
   const mypets = () => {
-    navigate("/mypets")
-    
+    navigate("/mypets");
   };
 
   const canShowChat = isChatOpen || window.innerWidth > 768;
@@ -101,21 +102,18 @@ const Dashboard = () => {
       {pet && (
         <div className="dashboard">
           {canShowChat && <ChatContainer user={pet} />}{" "}
-          {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
           <div className="fixed top-4 left-4 z-50">
             {" "}
-            {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
             {!canShowbutton && (
               <button
                 className="p-2 text-white rounded-full focus:outline-none"
-                onClick={handleChatToggle} // Alterne o estado isChatOpen quando o botão for clicado
+                onClick={handleChatToggle}
               >
                 <MenuIcon className="w-6 h-6" />{" "}
-                {/* Adicione o ícone do Chat usando o Heroicons */}
               </button>
             )}
           </div>
-          <div className="absolute top-4 right-4 z-50"> {/* Posicione a foto do perfil no canto superior direito */}
+          <div className="absolute top-4 right-4 z-50">
             {pet && (
               <img
                 src={pet.url} /* Use a URL do perfil selecionado */
@@ -136,10 +134,16 @@ const Dashboard = () => {
                   onCardLeftScreen={() => outOfFrame(character.name)}
                 >
                   <div
-                    style={{ backgroundImage: "url(" + character.url + ")" }}
-                    className="card w-72 md:w-96 h-96"
+                    className="card"
                   >
-                    <h3 className="text-slate-500">{character.name}</h3>
+                    <img src={character.url} alt="photo" className="rounded-xl" />
+                  </div>
+                  <div className="card-info bg-white">
+                    <h3 className=" drop-shadow-lg text-2xl text-left">
+                      {character.name}, <span>{character.age}</span> <br/>
+                      <span className="text-lg">{character.breed}</span>
+                    </h3>
+                    
                   </div>
                 </TinderCard>
               ))}

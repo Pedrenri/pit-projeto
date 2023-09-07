@@ -235,17 +235,17 @@ app.get("/user", async (req, res) => {
 // GET ONE DOG
 app.get("/dog", async (req, res) => {
   const client = new MongoClient(uri);
-  const userId = req.query.userId;
+  const petId = req.query.petId;
 
   try {
     await client.connect();
     const database = client.db("app-data");
-    const users = database.collection("pet");
+    const pets = database.collection("pet");
 
-    const query = { id: userId };
-    const user = await users.findOne(query);
+    const query = { id: petId };
+    const pet = await pets.findOne(query);
 
-    res.send(user);
+    res.send(pet);
   } finally {
     await client.close();
   }
@@ -270,7 +270,7 @@ app.get("/dogs", async (req, res) => {
   }
 });
 
-//Users(mapping matches or something like that I don't really get it)
+//Users
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
@@ -399,7 +399,7 @@ app.put("/update-user", async (req, res) => {
     const database = client.db("app-data");
     const users = database.collection("pet");
 
-    const query = { user_id: formData.user_id };
+    const query = { id: formData.id };
     const user = await users.findOne(query);
 
     const updateDocument = {

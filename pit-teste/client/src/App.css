@@ -83,10 +83,10 @@ textarea {
 .pet-item {
   text-align: center;
   width: 150px;
-  
+
   border-radius: 8px; /* Cantos arredondados */
   padding: 10px;
-  
+
   transition: transform 0.2s ease; /* Efeito de transformação suave no hover */
   cursor: pointer;
 }
@@ -184,7 +184,8 @@ nav .nav-button:disabled {
   padding: 20px;
 }
 
-.onboarding form input, select {
+.onboarding form input,
+select {
   padding: 15px 30px;
   margin: 10px 0;
   font-size: 15px;
@@ -240,7 +241,6 @@ nav .nav-button:disabled {
   align-self: center;
 }
 
-
 .onboarding form input[type="radio"]:checked + label {
   border: solid 2px rgb(221, 39, 22);
 }
@@ -263,11 +263,10 @@ nav .nav-button:disabled {
   display: flex;
   justify-content: space-between;
   background: url(./assets/homebg.png);
-  overflow-y:hidden;
+  overflow-y: hidden;
 }
 
 .dashboard .swipe-container {
-  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -280,6 +279,7 @@ nav .nav-button:disabled {
 }
 
 .card-container {
+  border-radius: 30px;
   width: 400px;
   height: 650px;
   -webkit-user-select: none; /* Safari */
@@ -288,18 +288,59 @@ nav .nav-button:disabled {
   user-select: none; /* Standard */
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .card {
   background-color: #fff;
-  height: 650px;
-  border-radius: 30px;
+  border-top-right-radius: 30px;
+  border-top-left-radius: 30px;
   background-size: cover;
   background-position: center;
+  width: 25rem;
+  padding: 15px;
 }
 
-.card h3 {
+.card img {
+  border: solid 1px lightgray;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.card-info {
+  display: flex;
+  padding: 0 20px 50px 20px;
+  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+
+.swipe {
+  background-color: white;
+  border-radius: 30px;
+}
+
+@media (min-width: 500px) {
+  .card {
+    width: 28rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .card {
+    width: 35rem;
+  }
+}
+
+.card-info h3 {
   margin-top: 0;
+  color: darkslategray;
+}
+
+.card-info h3 span {
+  font-style: italic;
+  color: gray;
 }
 
 .dashboard .swipe-info {
@@ -314,21 +355,15 @@ nav .nav-button:disabled {
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
     rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
-  
+
   text-align: left;
   z-index: 1;
   display: grid;
-  grid-template-rows: 100px  1fr 200px;
+  grid-template-rows: 100px 1fr 50px;
   border-right: solid 2px darkslategrey;
 }
 
 .chat-container .chat-container-header {
-  /* background: rgb(202, 55, 255);
-  background: radial-gradient(
-    circle,
-    rgba(202, 55, 255, 1) 0%,
-    rgba(130, 29, 255, 1) 100%
-  ); */
   border-bottom: solid 2px lightgray;
   height: 100px;
   display: flex;
@@ -354,6 +389,7 @@ nav .nav-button:disabled {
 .chat-container .log-out-icon {
   display: flex;
   align-items: center;
+  column-gap: 10px;
   color: black;
   font-weight: 800;
 }
@@ -383,26 +419,52 @@ nav .nav-button:disabled {
 
 .img-container img {
   width: 100%;
+  height: 100%;
+}
+
+.img-container-nm img {
+  width: 100%;
+  height: 100%;
 }
 
 /* ----- CHAT DISPLAY ----- */
 
 .chat-display {
   padding: 20px;
-  height: 60vh;
+  height: 70vh;
 }
 
 /* ----- CHAT INPUT ----- */
 .chat-input {
-  padding: 20px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row; /* Alterado para linha em vez de coluna */
+  align-items: center; /* Alinhe os elementos verticalmente no centro */
+  padding: 10px; /* Reduzido o padding para dar uma aparência mais compacta */
 }
 
-textarea {
+.chat-input textarea {
+  flex: 1; /* Ocupa todo o espaço disponível na linha */
   padding: 10px;
   resize: none;
   border-radius: 10px;
+  margin-right: 10px; /* Adiciona um espaço entre o textarea e o botão */
+  max-height: 150px; /* Altura máxima de 4 linhas */
+  overflow-y: auto; /* Adicione barras de rolagem vertical quando necessário */
+  line-height: 20px; /* Altura da linha do texto */
+}
+
+.chat-input button {
+  padding: 10px 20px; /* Aumenta o espaçamento do botão */
+  border-radius: 10px;
+  background-color: #0084ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.chat-input button:disabled {
+  background-color: #ccc; /* Estilo para botão desativado */
+  cursor: not-allowed;
 }
 
 /* UPDATE MODAL */
@@ -523,7 +585,7 @@ textarea {
   padding: 7px 10px;
   border-radius: 10px;
   max-width: 60%;
-  word-wrap: break-word ;
+  word-wrap: break-word;
 }
 
 .chat-display .user {
@@ -566,7 +628,7 @@ textarea {
 /* VERIFICATION */
 
 .verification {
-  background: url('./assets/homebg.png');
+  background: url("./assets/homebg.png");
   height: 100vh;
   display: flex;
   align-items: center;
@@ -615,8 +677,6 @@ textarea {
   outline: none;
 }
 
-
-
 .input-holder input {
   border: none;
   border-bottom: solid 2px #6f42c1;
@@ -637,7 +697,7 @@ textarea {
   justify-content: center;
   align-items: center;
   z-index: 10;
-  transition: ease .5s
+  transition: ease 0.5s;
 }
 
 .modal-content {
@@ -674,4 +734,3 @@ textarea {
   border: none;
   border-radius: 5px;
 }
-
