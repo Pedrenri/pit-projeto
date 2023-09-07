@@ -1,19 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "../components/Nav";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const PetRegister = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [cookies] = useCookies(["user"]);
   const [formData, setFormData] = useState({
     owner_id: cookies.UserId,
     name: "",
     age: "",
     gender: "male",
     url: "",
-    matches:[]
+    breed: "",
+    matches: [],
   });
+  const [breedOptions, setBreedOptions] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/dog-breeds")
+      .then((response) => {
+        setBreedOptions(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []); // Executar somente uma vez no montar do componente
 
   let navigate = useNavigate();
 
@@ -77,31 +90,38 @@ const PetRegister = () => {
             />
 
             <label htmlFor="breed">Raça</label>
-            <input
-              type="text"
+            <select
               id="breed"
               name="breed"
-              placeholder="Raça do animal"
-              required
               value={formData.breed}
               onChange={handleChange}
-            />
+              required
+            >
+              <option value="" disabled>
+                Selecione a raça (apenas cães)
+              </option>
+              {breedOptions.map((breed) => (
+                <option key={breed.id} value={breed.name}>
+                  {breed.name}
+                </option>
+              ))}
+            </select>
 
             <label>Idade</label>
-            
-              <input
-                type="number"
-                id="age"
-                name="age"
-                placeholder="AA"
-                required
-                value={formData.age}
-                onChange={handleChange}
-                maxLength="2"
-                onInput={maxLengthCheck}
-                className="w-4/12 md:w-1/5"
-              />
-            
+
+            <input
+              type="number"
+              id="age"
+              name="age"
+              placeholder="AA"
+              required
+              value={formData.age}
+              onChange={handleChange}
+              maxLength="2"
+              onInput={maxLengthCheck}
+              className="w-4/12 md:w-1/5"
+            />
+
             <label>Sexo</label>
             <div className="multInputContainer justify-center md:justify-start">
               <input

@@ -5,9 +5,9 @@ import { useCookies } from "react-cookie";
 
 const MatchesDisplay = ({ matches, setClickedUser }) => {
   const matchedUserIds = matches.map(({ id }) => id);
-  const [cookies, setCookie, removeCookie] = useCookies(null);
+  const [cookies] = useCookies(null);
   const [matchedProfiles, setMatchedProfiles] = useState(null);
-  const userId = cookies.UserId;
+  /* const userId = cookies.UserId; */
   const petID = cookies.PetID;
   
 
@@ -28,7 +28,7 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
 
   const filteredMatchedProfiles = matchedProfiles?.filter(
     (matchedProfile) =>
-      matchedProfile.matches.filter((profile) => profile.id == petID)
+      matchedProfile.matches.filter((profile) => profile.id === petID)
         .length > 0
   );
 

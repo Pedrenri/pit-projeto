@@ -2,19 +2,19 @@ import TinderCard from "react-tinder-card";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { MenuIcon } from "@heroicons/react/outline"; // Importe o ícone do Heroicons
-import ChatContainer from "../components/ChatContainer"
-
-
+import { useNavigate } from "react-router-dom";
+import ChatContainer from "../components/ChatContainer";
 
 import axios from "axios";
 
 const Dashboard = () => {
-  const [user, setUser] = useState(null);
+  /* const [user, setUser] = useState(null); */
   const [pet, setPet] = useState(null);
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [cookies] = useCookies(["user"]);
   const [genderedUsers, setGenderedUsers] = useState(null);
   const [lastDirection, setLastDirection] = useState();
   const [isChatOpen, setIsChatOpen] = useState(false); // Estado para controlar se o ChatContainer está aberto
+  const navigate = useNavigate();
 
   const userId = cookies.PetID;
   const getUser = async () => {
@@ -32,7 +32,11 @@ const Dashboard = () => {
   const getGenderedUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8000/gendered-users", {
-        params: { gender: pet?.gender_interest },
+        params: {
+          gender: pet?.gender_interest,
+          owner_id: pet?.owner_id,
+          breed: pet?.breed,
+        },
       });
       setGenderedUsers(response.data);
     } catch (error) {
@@ -73,10 +77,7 @@ const Dashboard = () => {
     console.log(name + " left the screen!");
   };
 
-  const matchedUserIds = pet?.matches
-    .map(({ id }) => id)
-    .concat(petID);
-
+  const matchedUserIds = pet?.matches.map(({ id }) => id).concat(petID);
 
   const filteredGenderedUsers = genderedUsers?.filter(
     (genderedUser) => !matchedUserIds?.includes(genderedUser.id)
@@ -86,22 +87,44 @@ const Dashboard = () => {
     setIsChatOpen(!isChatOpen);
   };
 
-  const canShowChat = isChatOpen || window.innerWidth > 768
-  
-  const canShowbutton = window.innerWidth > 768
+  const mypets = () => {
+    navigate("/mypets")
+    
+  };
+
+  const canShowChat = isChatOpen || window.innerWidth > 768;
+
+  const canShowbutton = window.innerWidth > 768;
 
   return (
     <>
       {pet && (
         <div className="dashboard">
-          {canShowChat  && <ChatContainer user={pet} />} {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
-          <div className="fixed top-4 left-4 z-50"> {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
-            {!canShowbutton && <button
-              className="p-2 text-white rounded-full focus:outline-none"
-              onClick={handleChatToggle} // Alterne o estado isChatOpen quando o botão for clicado
-            >
-              <MenuIcon className="w-6 h-6" /> {/* Adicione o ícone do Chat usando o Heroicons */}
-            </button> }
+          {canShowChat && <ChatContainer user={pet} />}{" "}
+          {/* Renderize o ChatContainer se isChatOpen for verdadeiro */}
+          <div className="fixed top-4 left-4 z-50">
+            {" "}
+            {/* Adicione a classe "fixed" para posicionar o botão no canto superior esquerdo */}
+            {!canShowbutton && (
+              <button
+                className="p-2 text-white rounded-full focus:outline-none"
+                onClick={handleChatToggle} // Alterne o estado isChatOpen quando o botão for clicado
+              >
+                <MenuIcon className="w-6 h-6" />{" "}
+                {/* Adicione o ícone do Chat usando o Heroicons */}
+              </button>
+            )}
+          </div>
+          <div className="absolute top-4 right-4 z-50"> {/* Posicione a foto do perfil no canto superior direito */}
+            {pet && (
+              <img
+                src={pet.url} /* Use a URL do perfil selecionado */
+                alt={pet.name}
+                className="w-12 h-12 rounded-full object-cover log-out-icon"
+                title="Trocar perfil"
+                onClick={mypets}
+              />
+            )}
           </div>
           <div className="swipe-container w-full">
             <div className="card-container">

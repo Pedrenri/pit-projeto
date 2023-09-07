@@ -2,38 +2,40 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import UpdateAcc from "./UpdateAccount";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 
-const ChatHeader = ({ user }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
-  const [wasClicked, setWasclicked] = useState(false);
+const ChatHeader = ({ user, setClickedUser }) => {
+  const [cookies, removeCookie] = useCookies(["user"]);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  const logout = () => {
-    navigate("/")
-    removeCookie("UserId", cookies.UserId);
-    removeCookie("AuthToken", cookies.AuthToken);
-    removeCookie("PetID", cookies.PetID);
-    window.location.reload();
+  // Função para limpar a variável clickedUser
+  const handleLogoutClick = () => {
+    setClickedUser(null);
   };
-  const changeUser = () => {
-    setShowModal(true);
-  };
+
+  // Determine qual usuário exibir com base na prop clickedUserProfile
+  const displayUser =  user;
 
   return (
     <div className="chat-container-header">
-      <div className="profile" onClick={changeUser}>
-        <div className="img-container">
-          <img src={user.url} alt={"photo of "} />
+      <div className="profile">
+        <div className="img-container-nm">
+          <img src={displayUser.url} alt={"profile_pic"} />
         </div>
-        <h3>{user.name}</h3>
+        <h3>{displayUser.name}</h3>
       </div>
-      
-      <i className="log-out-icon" onClick={logout} title="Sair">
-        ⇦
-      </i>
-      {showModal && user && <UpdateAcc setShowModal={setShowModal} />}
+
+      {/* Adicione a função de limpeza ao botão log-out-icon */}
+      <FontAwesomeIcon
+        icon={faArrowLeft}
+        className="cursor-pointer"
+        onClick={handleLogoutClick}
+        title="Voltar para conversas"
+      />
+      {showModal && displayUser && <UpdateAcc setShowModal={setShowModal} />}
     </div>
   );
 };

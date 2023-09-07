@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Nav from "./Nav";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 const UpdateAcc = ({ setShowModal }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [cookies, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
   const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
@@ -74,16 +73,14 @@ const UpdateAcc = ({ setShowModal }) => {
       });
 
       if (response.status === 200) {
-        navigate("/");
-        removeCookie("UserId", cookies.UserId);
-        removeCookie("AuthToken", cookies.AuthToken);
+        navigate("/mypets");
+        removeCookie("PetID", cookies.PetID);
       }
     } catch (err) {
       console.log(err);
     } finally {
-      navigate("/");
-      removeCookie("UserId", cookies.UserId);
-      removeCookie("AuthToken", cookies.AuthToken);
+      navigate("/mypets");
+      removeCookie("PetID", cookies.PetID);
     }
   };
 

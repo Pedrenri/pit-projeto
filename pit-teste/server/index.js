@@ -7,6 +7,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const axios = require("axios");
 require("dotenv").config();
 
 const uri = process.env.URI;
@@ -28,11 +29,11 @@ app.delete("/user", async (req, res) => {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("users");
-    const pets = database.collection("pet")
+    const pets = database.collection("pet");
 
     const query = { user_id: userId };
     const result = await users.deleteOne(query);
-    const resultPets = await pets.deleteMany({ owner_id: userId })
+    const resultPets = await pets.deleteMany({ owner_id: userId });
 
     if (result.deletedCount === 1 && resultPets) {
       res.status(200).json({ message: "Usuário excluído com sucesso." });
@@ -52,7 +53,7 @@ app.delete("/dog", async (req, res) => {
   try {
     await client.connect();
     const database = client.db("app-data");
-    const pets = database.collection("pet")
+    const pets = database.collection("pet");
 
     const query = { id: petId };
     const result = await pets.deleteOne(query);
@@ -66,7 +67,6 @@ app.delete("/dog", async (req, res) => {
     await client.close();
   }
 });
-
 
 // SIGNUP
 app.post("/signup", async (req, res) => {
@@ -82,7 +82,14 @@ app.post("/signup", async (req, res) => {
     const database = client.db("app-data");
     const users = database.collection("users");
     const existingUser = await users.findOne({ email });
-    const verificationCode = crypto.randomBytes(4).toString("hex");
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let verificationCode = "";
+
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      verificationCode += characters.charAt(randomIndex);
+    }
 
     if (existingUser) {
       return res.status(409).send("Usuário já cadastrado! Faça login!");
@@ -267,7 +274,6 @@ app.get("/dogs", async (req, res) => {
 app.get("/users", async (req, res) => {
   const client = new MongoClient(uri);
   const userIds = JSON.parse(req.query.userIds);
-  
 
   try {
     await client.connect();
@@ -296,16 +302,22 @@ app.get("/users", async (req, res) => {
 app.get("/gendered-users", async (req, res) => {
   const client = new MongoClient(uri);
   const gender = req.query.gender;
+  const ownerId = req.query.owner_id;
+  const breed = req.query.breed;
 
   try {
     await client.connect();
     const database = client.db("app-data");
     const users = database.collection("pet");
-    const query = { gender_identity: { $eq: gender } };
+    const query = {
+      gender_identity: { $eq: gender },
+      breed: { $eq: breed },
+      owner_id: { $ne: ownerId },
+    };
     const foundUsers = await users.find(query).toArray();
     res.json(foundUsers);
   } finally {
-    await client.close();
+    await client.close()
   }
 });
 
@@ -320,7 +332,7 @@ app.put("/user", async (req, res) => {
     const database = client.db("app-data");
     const users = database.collection("users");
     const existingUser = await users.findOne({ user_name: userName });
-    console.log(existingUser)
+    console.log(existingUser);
 
     if (existingUser) {
       return res.status(409).send("Este nome de usuário já está em uso!");
@@ -392,10 +404,8 @@ app.put("/update-user", async (req, res) => {
 
     const updateDocument = {
       $set: {
-        name: formData?.name
-          ? formData.name
-          : user.name,
-        
+        name: formData?.name ? formData.name : user.name,
+
         url: formData?.url ? formData.url : user.url,
       },
     };
@@ -425,7 +435,7 @@ app.put("/addmatch", async (req, res) => {
       const updateQuery = {
         id: petID,
         matches: { $ne: { id: matchedUserId } },
-      }
+      };
       const updateDocument = {
         $push: { matches: { id: matchedUserId } },
       };
@@ -472,7 +482,7 @@ function gerarSenha() {
   while (senha.length < 6) {
     senha +=
       caracteresRestantes[
-      Math.floor(Math.random() * caracteresRestantes.length)
+        Math.floor(Math.random() * caracteresRestantes.length)
       ];
   }
 
@@ -615,12 +625,41 @@ app.put("/addpet", async (req, res) => {
       breed: formData.breed,
       url: formData.url,
       gender_interest: formData.gender == "male" ? "female" : "male",
-      matches:formData.matches
+      matches: formData.matches,
     };
     const insertedUser = await pet.insertOne(insertDocument);
     res.send(insertedUser);
   } finally {
     await client.close();
+  }
+});
+
+// Rota para obter a lista de raças de cachorros
+app.get("/dog-breeds", async (req, res) => {
+  try {
+    // Faça a solicitação à API "The Dog API" para obter a lista de raças em inglês
+    const response = await axios.get("https://api.thedogapi.com/v1/breeds");
+    const dogBreeds = response.data;
+
+    // Crie um objeto de mapeamento das raças em português
+    const breedTranslations = {
+      bulldog: "Bulldog",
+      labrador: "Labrador Retriever",
+      goldenretriever: "Golden Retriever",
+      newfoundland: "Terra-nova",
+      // Adicione mais traduções conforme necessário
+    };
+
+    // Mapeie as raças em inglês para as raças em português
+    const translatedBreeds = dogBreeds.map((breed) => ({
+      id: breed.id,
+      name: breedTranslations[breed.name.toLowerCase()] || breed.name,
+    }));
+
+    res.json(translatedBreeds);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro ao buscar raças de cachorros." });
   }
 });
 

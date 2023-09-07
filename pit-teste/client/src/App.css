@@ -61,7 +61,17 @@ textarea {
 
 /* ----- MYPETSPAGE ----- */
 
-/* Estilo para a lista de animais */
+/* Mantenha o CSS existente */
+
+/* Centralize a lista de animais e faça com que pareça com a página de seleção de perfis da Netflix */
+.my-pets-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centralize verticalmente */
+  justify-content: center; /* Centralize horizontalmente */
+  height: 100vh; /* Defina a altura da página como 100% da altura da viewport */
+}
+
 .pets-list {
   list-style: none;
   padding: 0;
@@ -70,27 +80,35 @@ textarea {
   gap: 20px;
 }
 
-/* Estilo para cada item da lista (animal) */
 .pet-item {
   text-align: center;
   width: 150px;
+  
+  border-radius: 8px; /* Cantos arredondados */
+  padding: 10px;
+  
+  transition: transform 0.2s ease; /* Efeito de transformação suave no hover */
+  cursor: pointer;
 }
 
-/* Estilo para a foto do animal (dentro de um círculo) */
+.pet-item:hover {
+  transform: scale(1.05); /* Efeito de escala no hover */
+}
+
 .pet-image {
   width: 100px;
   height: 100px;
-  border-radius: 50%; /* Cria um círculo usando border-radius */
+  border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #ccc; /* Adicione uma borda ao círculo */
+  border: 2px solid #fff; /* Adicione uma borda branca */
+  margin: 0 auto; /* Centralize a imagem horizontalmente */
 }
 
-/* Estilo para o nome do animal */
 .pet-name {
-  margin-top: 5px;
+  margin-top: 10px; /* Espaçamento superior aumentado */
   font-weight: bold;
+  font-size: 16px; /* Tamanho da fonte aumentado */
 }
-
 
 /* ----- NAVBAR ----- */
 
@@ -166,7 +184,7 @@ nav .nav-button:disabled {
   padding: 20px;
 }
 
-.onboarding form input {
+.onboarding form input, select {
   padding: 15px 30px;
   margin: 10px 0;
   font-size: 15px;
@@ -300,22 +318,23 @@ nav .nav-button:disabled {
   text-align: left;
   z-index: 1;
   display: grid;
-  grid-template-rows: 100px 80px 1fr 200px;
+  grid-template-rows: 100px  1fr 200px;
   border-right: solid 2px darkslategrey;
 }
 
 .chat-container .chat-container-header {
-  background: rgb(202, 55, 255);
+  /* background: rgb(202, 55, 255);
   background: radial-gradient(
     circle,
     rgba(202, 55, 255, 1) 0%,
     rgba(130, 29, 255, 1) 100%
-  );
+  ); */
+  border-bottom: solid 2px lightgray;
   height: 100px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 20px;
 }
 
 .chat-container .option {
@@ -335,7 +354,7 @@ nav .nav-button:disabled {
 .chat-container .log-out-icon {
   display: flex;
   align-items: center;
-  color: white;
+  color: black;
   font-weight: 800;
 }
 
@@ -355,6 +374,13 @@ nav .nav-button:disabled {
   margin: 10px;
 }
 
+.img-container-nm {
+  height: 60px;
+  width: 60px;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
 .img-container img {
   width: 100%;
 }
@@ -364,7 +390,6 @@ nav .nav-button:disabled {
 .chat-display {
   padding: 20px;
   height: 60vh;
-  overflow-y: auto;
 }
 
 /* ----- CHAT INPUT ----- */
@@ -464,7 +489,8 @@ textarea {
 /* ----- MATCHES DISPLAY ----- */
 
 .match-card {
-  border-bottom: solid 2px #eee;
+  border-top: solid 1px #eee;
+  border-bottom: solid 1px #eee;
   padding: 20px;
   transition: ease 0.2s;
   display: flex;
@@ -545,19 +571,22 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  
 }
 
-.input-holder {
+.verification .input-holder {
   display: flex;
   flex-direction: column;
   background-color: white;
-  height:20rem;
+  height: auto; /* Tornar a altura automática para acomodar os inputs */
   border-radius: 30px;
   justify-content: space-around;
   align-items: center;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adicione uma sombra */
+  row-gap: 20px;
+  padding: 10px;
 }
-.input-holder button {
+
+.verification .input-holder button {
   background: rgb(169, 55, 255);
   background: linear-gradient(
     0deg,
@@ -568,6 +597,25 @@ textarea {
   color: #fafafa;
   border-radius: 10px;
 }
+
+.verification .verification-code-inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.verification .verification-code-inputs input {
+  width: 3rem; /* Tornar os inputs um pouco maiores */
+  height: 3rem; /* Tornar os inputs um pouco maiores */
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0 0.2rem;
+  border: 1px solid #d5aaff; /* Cor roxa pastel para as bordas */
+  border-radius: 5px;
+  outline: none;
+}
+
+
 
 .input-holder input {
   border: none;
