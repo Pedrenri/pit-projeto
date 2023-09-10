@@ -78,7 +78,6 @@ const Dashboard = () => {
     console.log(name + " left the screen!");
   };
 
-  console.log(pet);
 
   const matchedUserIds = pet?.matches?.map(({ id }) => id).concat(petID);
 

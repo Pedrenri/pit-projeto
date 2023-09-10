@@ -3,6 +3,7 @@ import Nav from "../components/Nav";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
@@ -69,93 +70,101 @@ const Onboarding = () => {
 
   return (
     <>
-      <Nav minimal={true} setShowModal={() => {}} showmodal={false} />
-      <div className="onboarding">
-        <h2>CRIAR CONTA</h2>
-        <form
-          action=""
-          onSubmit={handleSubmit}
-          className="flex justify-center flex-col sm:flex-row items-center sm:items-start"
+      {/* <Nav minimal={true} setShowModal={() => {}} showmodal={false} /> */}
+      <div className="page-container">
+        <motion.div
+          className="onboarding page-content"
+          initial={{ x: "-100%" }} // Posição inicial fora da tela
+          animate={{ x: 0 }} // Posição final na tela
+          exit={{ x: "100%" }} // Posição ao sair da tela
+          transition={{ type: "tween", duration: 0.5 }}
         >
-          <section className="md:w-4/12 flex ">
-            <label htmlFor="first_name">Nome completo</label>
-            <input
-              type="text"
-              id="full_name"
-              name="full_name"
-              placeholder="Nome Completo"
-              required
-              value={formData.full_name}
-              onChange={handleChange}
-            />
+          <h2>CRIAR CONTA</h2>
+          <form
+            action=""
+            onSubmit={handleSubmit}
+            className="flex justify-center flex-col sm:flex-row items-center sm:items-start"
+          >
+            <section className="md:w-4/12 flex ">
+              <label htmlFor="first_name">Nome completo</label>
+              <input
+                type="text"
+                id="full_name"
+                name="full_name"
+                placeholder="Nome Completo"
+                required
+                value={formData.full_name}
+                onChange={handleChange}
+              />
 
-            <label htmlFor="user_name">Nome de Usuário</label>
-            <input
-              type="text"
-              id="user_name"
-              name="user_name"
-              placeholder="Nome de Usuário (NÃO PODE SER MUDADO!)"
-              required
-              value={formData.user_name}
-              onChange={handleChange}
-            />
+              <label htmlFor="user_name">Nome de Usuário</label>
+              <input
+                type="text"
+                id="user_name"
+                name="user_name"
+                placeholder="Nome de Usuário (NÃO PODE SER MUDADO!)"
+                required
+                value={formData.user_name}
+                onChange={handleChange}
+              />
 
-            <label htmlFor="address">Endereço</label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              placeholder="Endereço"
-              required
-              value={formData.address}
-              onChange={handleChange}
-            />
+              <label htmlFor="address">Endereço</label>
+              <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Endereço"
+                required
+                value={formData.address}
+                onChange={handleChange}
+              />
 
-            <div className="multInputHolder">
-              <div>
-                <label>Data de Nascimento</label>
-                <div className="multInputContainer justify-center md:justify-start">
-                  <input
-                    type="date"
-                    id="birth_date"
-                    name="birth_date"
-                    required
-                    value={formData.birth_date}
-                    onChange={handleChange}
-                    className="w-4/12 md:w-full"
-                  />
+              <div className="multInputHolder">
+                <div>
+                  <label>Data de Nascimento</label>
+                  <div className="multInputContainer justify-center md:justify-start">
+                    <input
+                      type="date"
+                      id="birth_date"
+                      name="birth_date"
+                      required
+                      value={formData.birth_date}
+                      onChange={handleChange}
+                      className="w-8/12 md:w-full"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label>Sexo</label>
+                  <div className="multInputContainer justify-center md:justify-start">
+                    <input
+                      type="radio"
+                      id="man_gender_id"
+                      name="gender_identity"
+                      value="man"
+                      onChange={handleChange}
+                      checked={formData.gender_identity === "man"}
+                    />
+                    <label htmlFor="man_gender_id">Masculino</label>
+                    <input
+                      type="radio"
+                      id="woman_gender_id"
+                      name="gender_identity"
+                      value="woman"
+                      onChange={handleChange}
+                      checked={formData.gender_identity === "woman"}
+                    />
+                    <label htmlFor="woman_gender_id">Feminino</label>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <label>Sexo</label>
-                <div className="multInputContainer justify-center md:justify-start">
-                  <input
-                    type="radio"
-                    id="man_gender_id"
-                    name="gender_identity"
-                    value="man"
-                    onChange={handleChange}
-                    checked={formData.gender_identity === "man"}
-                  />
-                  <label htmlFor="man_gender_id">Masculino</label>
-                  <input
-                    type="radio"
-                    id="woman_gender_id"
-                    name="gender_identity"
-                    value="woman"
-                    onChange={handleChange}
-                    checked={formData.gender_identity === "woman"}
-                  />
-                  <label htmlFor="woman_gender_id">Feminino</label>
-                </div>
-              </div>
-            </div>
-
-            <input type="submit" className="w-11/12" />
-            {error && <p>{error}</p>}
-          </section>
-        </form>
+              <input type="submit" className="w-11/12" />
+              {error && <p>{error}</p>}
+            </section>
+          </form>
+        </motion.div>
       </div>
     </>
   );

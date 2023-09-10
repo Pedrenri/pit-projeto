@@ -139,10 +139,10 @@ const UpdateAcc = ({ setShowModal }) => {
         exit={{ y: 500 }}
         className="updateModal flex flex-col gap-y-4 justify-around items-center"
       >
-        <div className="close-icon self-end absolute top-4 right-6" onClick={handleClick}>
+        <div className="close-icon self-end absolute top-0 right-0" onClick={handleClick}>
         <FontAwesomeIcon icon={faX} />
         </div>
-        <h2>EDITAR DADOS DO PET  </h2>
+        <h2 className="mt-2">EDITAR DADOS DO PET</h2>
         <div className="photo-container">
           <img
             src={formData?.url ? formData.url : user?.url}

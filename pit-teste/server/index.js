@@ -54,11 +54,15 @@ app.delete("/dog", async (req, res) => {
     await client.connect();
     const database = client.db("app-data");
     const pets = database.collection("pet");
+    const messages = database.collection("messages");
 
     const query = { id: petId };
     const result = await pets.deleteOne(query);
+    const resultMessages = await messages.deleteMany({
+      $or: [{ to_ownerId: petId }, { from_ownerId: petId }],
+    });
 
-    if (result.deletedCount === 1 && resultPets) {
+    if (result.deletedCount === 1 && resultMessages) {
       res.status(200).json({ message: "Pet excluído com sucesso." });
     } else {
       res.status(404).json({ message: "Pet não encontrado." });
@@ -317,7 +321,7 @@ app.get("/gendered-users", async (req, res) => {
     const foundUsers = await users.find(query).toArray();
     res.json(foundUsers);
   } finally {
-    await client.close()
+    await client.close();
   }
 });
 
@@ -404,9 +408,8 @@ app.put("/update-dog", async (req, res) => {
 
     const updateDocument = {
       $set: {
-        name: formData?.name ? formData.name : user.name,
-
-        url: formData?.url ? formData.url : user.url,
+        name: formData?.name ? formData.name : user?.name,
+        url: formData?.url ? formData.url : user?.url,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
@@ -431,8 +434,8 @@ app.put("/update-user", async (req, res) => {
 
     const updateDocument = {
       $set: {
-        full_name: formData?.name ? formData.name : user.name,
-        address: formData?.address ? formData.address : user.address,
+        full_name: formData?.full_name ? formData.full_name : user?.full_name,
+        address: formData?.address ? formData.address : user?.address,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);

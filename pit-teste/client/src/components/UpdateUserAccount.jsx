@@ -13,7 +13,6 @@ const UpdateUserAcc = ({ setShowModal }) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
   const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
 
-
   /* const userId = cookies.UserId; */
   const petId = cookies.UserId;
 
@@ -21,9 +20,9 @@ const UpdateUserAcc = ({ setShowModal }) => {
     const getUser = async () => {
       try {
         const response = await axios.get("http://localhost:8000/user", {
-          params: { userId: petId }
+          params: { userId: petId },
         });
-        console.log(response.data.full_name)
+        console.log(response.data.full_name);
         setUser(response.data);
       } catch (error) {
         console.log(error);
@@ -35,7 +34,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
   const [formData, setFormData] = useState({
     user_id: petId,
     full_name: user?.full_name,
-    address: user?.address
+    address: user?.address,
   });
 
   let navigate = useNavigate();
@@ -50,7 +49,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
       if (success) {
         setUpdateSuccess(true); // Set updateSuccess to true
         setTimeout(() => {
-          window.location.reload()
+          window.location.reload();
         }, 1000);
       }
     } catch (err) {
@@ -65,7 +64,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
   const confirmDelete = async () => {
     try {
       const response = await axios.delete("http://localhost:8000/user", {
-        params: { petId },
+        params: { userId: petId },
       });
 
       if (response.status === 200) {
@@ -77,8 +76,10 @@ const UpdateUserAcc = ({ setShowModal }) => {
     } catch (err) {
       console.log(err);
     } finally {
-      navigate("/mypets");
+      navigate("/");
       removeCookie("PetID", cookies.PetID);
+      removeCookie("UserId", cookies.UserId);
+      removeCookie("AuthToken", cookies.AuthToken);
     }
   };
 
@@ -87,10 +88,10 @@ const UpdateUserAcc = ({ setShowModal }) => {
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     const name = e.target.name;
 
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleClick = () => {
@@ -109,7 +110,8 @@ const UpdateUserAcc = ({ setShowModal }) => {
           >
             <h2>Confirmar exclusão de conta</h2>
             <p>
-              Tem certeza de que quer excluir sua conta? Todos os dados dessa conta serão apagados.
+              Tem certeza de que quer excluir sua conta? Todos os dados dessa
+              conta serão apagados.
             </p>
             <div className="modal-buttons">
               <motion.button
@@ -140,10 +142,13 @@ const UpdateUserAcc = ({ setShowModal }) => {
         exit={{ y: 500 }}
         className="updateModal flex flex-col gap-y-4 justify-around items-center"
       >
-        <div className="close-icon self-end absolute top-0 " onClick={handleClick}>
-        <FontAwesomeIcon icon={faX} />
+        <div
+          className="close-icon self-end absolute top-0 "
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon icon={faX} />
         </div>
-        <h2 className="m-4">EDITAR DADOS DO USUÁRIO  </h2>
+        <h2 className="m-4">EDITAR DADOS DO USUÁRIO </h2>
         <form
           action=""
           onSubmit={handleSubmit}
@@ -159,15 +164,12 @@ const UpdateUserAcc = ({ setShowModal }) => {
                   type="text"
                   id="full_name"
                   name="full_name"
-                  placeholder={user?.full_name || ''}
+                  placeholder={user?.full_name || ""}
                   onChange={handleChange}
                 />
               </div>
-
-              
             </div>
             <div className="flex flex-col gap-y-8">
-
               {/* Profile Picture field */}
               <div className="flex gap-x-8 items-center">
                 <div className="flex flex-col">

@@ -46,7 +46,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       const success = response.status === 201;
 
       if ((success && isSignUp) || (success && !isSignUp && !hasUsername))
-        navigate("/onboarding");
+        navigate("/register");
       if (success && !isSignUp && hasUsername) navigate("/mypets");
       if (success && !isVerified && !isSignUp) navigate("/verification");
 

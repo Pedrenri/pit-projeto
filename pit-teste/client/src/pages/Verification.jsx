@@ -56,7 +56,10 @@ function VerificationForm() {
 
   return (
     <div className="verification">
-      <div className="input-holder w-11/12 md:w-1/2 lg:w-1/4">
+      <motion.div className="input-holder w-11/12 md:w-1/2 lg:w-1/4" initial={{ x: "-100%" }} // Posição inicial fora da tela
+        animate={{ x: 0 }} // Posição final na tela
+        exit={{ x: "100%" }} // Posição ao sair da tela
+        transition={{ type: "tween", duration: 0.5 }}>
         <h1>Verificar Email</h1>
         <div className="verification-code-inputs">
           {verificationCode.map((char, index) => (
@@ -78,7 +81,7 @@ function VerificationForm() {
           Verificar
         </motion.button>
         <p>{message}</p>
-      </div>
+      </motion.div>
     </div>
   );
 }

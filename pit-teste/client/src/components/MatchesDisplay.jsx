@@ -9,7 +9,7 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
   const [matchedProfiles, setMatchedProfiles] = useState(null);
   /* const userId = cookies.UserId; */
   const petID = cookies.PetID;
-  
+  const [lastMessages, setLastMessages] = useState({}); // Estado para armazenar as últimas mensagens
 
   const getMatches = async () => {
     try {
@@ -22,32 +22,35 @@ const MatchesDisplay = ({ matches, setClickedUser }) => {
     }
   };
 
+  
+
   useEffect(() => {
     getMatches();
   }, [matches]);
 
   const filteredMatchedProfiles = matchedProfiles?.filter(
     (matchedProfile) =>
-      matchedProfile.matches.filter((profile) => profile.id === petID)
-        .length > 0
+      matchedProfile.matches.filter((profile) => profile.id === petID).length >
+      0
   );
-
-  console.log(matchedProfiles)
-
-  console.log(filteredMatchedProfiles)
 
   return (
     <div className="matches-display">
       {filteredMatchedProfiles?.map((match, _index) => (
         <div
-          key={{ _index }}
+          key={_index}
           className="match-card"
           onClick={() => setClickedUser(match)}
         >
           <div className="img-container">
             <img src={match?.url} alt={match?.name + "profile"} />
           </div>
-          <h2>{match?.name}</h2>
+          <div className="flex flex-col">
+            <h2>{match?.name}</h2>
+            <p className="font-medium text-gray-700">
+            
+            </p>
+          </div>
         </div>
       ))}
     </div>

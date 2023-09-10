@@ -9,6 +9,7 @@ import Onboarding from "./pages/Onboarding";
 import PetRegister from "./pages/PetRegister";
 import VerificationForm from "./pages/Verification";
 import MyPetsPage from "./pages/MyPetsPage";
+import RegistrationPage from "./pages/RegistrationPage";
 import LoadingAnimation from "./components/LoadingAnimation"; // Importando o componente de animação de carregamento
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
             {authToken && <Route path="/dashboard" element={<Dashboard />} />}
             {authToken && <Route path="/mypets" element={<MyPetsPage />} />}
             {authToken && <Route path="/onboarding" element={<Onboarding />} />}
+            {authToken && <Route path="/register" element={<RegistrationPage />} />}
             {authToken && (
               <Route path="/verification" element={<VerificationForm />} />
             )}

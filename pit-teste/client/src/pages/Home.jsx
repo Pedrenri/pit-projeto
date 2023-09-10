@@ -58,7 +58,6 @@ const Home = () => {
   };
 
   const handleClick = () => {
-    console.log("clicked");
     if (authToken) {
       removeCookie("UserId", cookies.UserId);
       removeCookie("AuthToken", cookies.AuthToken);
