@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import { MenuIcon } from "@heroicons/react/outline"; // Importe o ícone do Heroicons
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../components/ChatContainer";
+import { motion } from "framer-motion";
 
 import axios from "axios";
 
@@ -124,33 +125,34 @@ const Dashboard = () => {
               />
             )}
           </div>
-          <div className="swipe-container w-full">
-            <div className="card-container">
-              {filteredGenderedUsers?.map((character) => (
-                <TinderCard
-                  className="swipe"
-                  key={character.id}
-                  onSwipe={(dir) => swiped(dir, character.id)}
-                  onCardLeftScreen={() => outOfFrame(character.name)}
-                >
-                  <div
-                    className="card"
-                  >
-                    <img src={character.url} alt="photo" className="rounded-xl" />
+          <div className="swipe-container w-full ">
+            {filteredGenderedUsers?.map((character) => (
+              <TinderCard
+                className="swipe shadow-lg"
+                key={character.id}
+                onSwipe={(dir) => swiped(dir, character.id)}
+                onCardLeftScreen={() => outOfFrame(character.name)}
+              >
+                <div className="card">
+                  <div className="card-img">
+                    <img
+                      src={character.url}
+                      alt="photo"
+                      className="rounded-xl"
+                    />
                   </div>
-                  <div className="card-info bg-white">
-                    <h3 className=" drop-shadow-lg text-2xl text-left">
-                      {character.name}, <span>{character.age}</span> <br/>
-                      <span className="text-lg">{character.breed}</span>
-                    </h3>
-                    
-                  </div>
-                </TinderCard>
-              ))}
-              {!filteredGenderedUsers && (
-                <p>Ops! Parece que você já viu tudo aqui!</p>
-              )}
-            </div>
+                </div>
+                <div className="card-info bg-white">
+                  <h3 className=" drop-shadow-lg text-2xl text-left">
+                    {character.name}, <span>{character.age}</span> <br />
+                    <span className="text-lg">{character.breed}</span>
+                  </h3>
+                </div>
+              </TinderCard>
+            ))}
+            {!filteredGenderedUsers && (
+              <p>Ops! Parece que você já viu tudo aqui!</p>
+            )}
           </div>
         </div>
       )}

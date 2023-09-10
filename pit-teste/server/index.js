@@ -389,8 +389,8 @@ app.post("/verification", async (req, res) => {
   }
 });
 
-//UPDATE USER
-app.put("/update-user", async (req, res) => {
+//UPDATE DOG
+app.put("/update-dog", async (req, res) => {
   const client = new MongoClient(uri);
   const formData = req.body.formData;
 
@@ -407,6 +407,32 @@ app.put("/update-user", async (req, res) => {
         name: formData?.name ? formData.name : user.name,
 
         url: formData?.url ? formData.url : user.url,
+      },
+    };
+    const insertedUser = await users.updateOne(query, updateDocument);
+    res.send(insertedUser);
+  } finally {
+    await client.close();
+  }
+});
+
+//UPDATE USER
+app.put("/update-user", async (req, res) => {
+  const client = new MongoClient(uri);
+  const formData = req.body.formData;
+
+  try {
+    await client.connect();
+    const database = client.db("app-data");
+    const users = database.collection("users");
+
+    const query = { user_id: formData.user_id };
+    const user = await users.findOne(query);
+
+    const updateDocument = {
+      $set: {
+        full_name: formData?.name ? formData.name : user.name,
+        address: formData?.address ? formData.address : user.address,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);

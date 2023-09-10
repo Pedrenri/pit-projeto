@@ -3,13 +3,17 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import UpdateAcc from "../components/UpdateAccount";
+import UpdateUserAcc from "../components/UpdateUserAccount"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCog } from "@fortawesome/free-solid-svg-icons";
+import { faSignOut } from "@fortawesome/free-solid-svg-icons";
 
 const MyPetsPage = () => {
-  const [cookies, setCookie] = useCookies(["UserId", "PetID"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["UserId", "PetID"]);
   const [editingPet, setEditingPet] = useState(null);
   const userId = cookies.UserId;
   const navigate = useNavigate();
-
+  const [isUserModalVisible, setIsUserModalVisible] = useState(false);
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ const MyPetsPage = () => {
 
   const handleEditClick = (pet) => {
     setCookie("PetID", pet.id);
-    setEditingPet(pet); 
+    setEditingPet(pet);
   };
 
   const handlePetClick = (petId) => {
@@ -41,22 +45,54 @@ const MyPetsPage = () => {
     navigate("/petreg");
   };
 
+  const handleUserIconClick = () => {
+    setIsUserModalVisible(true);
+  };
+
+  const handleLogOut = () => {
+    navigate("/");
+    removeCookie("PetID", cookies.PetId)
+    removeCookie("AuthToken", cookies.AuthToken)
+    removeCookie("UserId", cookies.UserId)
+  }
+
   return (
     <div className="my-pets-page bg-gray-100 min-h-screen p-4">
-       <h1 className="text-3xl font-semibold mb-4">Meus Animais</h1>
+      <div className="absolute top-4 right-4 text-gray-600 cursor-pointer text-2xl flex gap-4">
+      <FontAwesomeIcon
+          icon={faSignOut}
+          className=""
+          title="Editar dados do usuário"
+          onClick={handleLogOut}
+        />
+        <FontAwesomeIcon
+          icon={faCog}
+          className=""
+          title="Sair"
+          onClick={handleUserIconClick}
+        />
+        
+        </div>
+      
+      <h1 className="text-3xl font-semibold mb-4">Meus Animais</h1>
       <div className="flex flex-wrap justify-center items-center m-2">
         {pets.map((pet) => (
           <div key={pet.id} className="m-2">
-            <div
-              className="pet-item bg-white rounded-lg shadow-md hover:shadow-lg cursor-pointer"
-            >
-              <img className="pet-image rounded-full" onClick={() => handlePetClick(pet.id)} src={pet?.url} alt={pet?.name} />
-              <p className="pet-name text-center mt-2 font-semibold">{pet?.name}</p>
+            <div className="pet-item bg-white rounded-lg shadow-md hover:shadow-lg cursor-pointer">
+              <img
+                className="pet-image rounded-full"
+                onClick={() => handlePetClick(pet.id)}
+                src={pet?.url}
+                alt={pet?.name}
+              />
+              <p className="pet-name text-center mt-2 font-semibold">
+                {pet?.name}
+              </p>
               <button
                 className="edit-pet-button text-blue-500"
-                onClick={() => handleEditClick(pet)} // Open modal when edit icon is clicked
+                onClick={() => handleEditClick(pet)}
               >
-                Edit
+                Editar Dados
               </button>
             </div>
           </div>
@@ -75,10 +111,10 @@ const MyPetsPage = () => {
       </div>
 
       {editingPet && (
-        <UpdateAcc
-          pet={editingPet} // Pass the editing pet's data to the modal
-          setShowModal={setEditingPet}
-        />
+        <UpdateAcc pet={editingPet} setShowModal={setEditingPet} />
+      )}
+      {isUserModalVisible && (
+        <UpdateUserAcc setShowModal={setIsUserModalVisible} />
       )}
     </div>
   );

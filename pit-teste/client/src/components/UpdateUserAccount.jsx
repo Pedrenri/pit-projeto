@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
 
-const UpdateAcc = ({ setShowModal }) => {
+const UpdateUserAcc = ({ setShowModal }) => {
   const [cookies, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
@@ -15,16 +15,15 @@ const UpdateAcc = ({ setShowModal }) => {
 
 
   /* const userId = cookies.UserId; */
-  const petId = cookies.PetID;
-  console.log(petId)
+  const petId = cookies.UserId;
 
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/dog", {
-          params: { petId: petId }
+        const response = await axios.get("http://localhost:8000/user", {
+          params: { userId: petId }
         });
-        console.log(response.data.name)
+        console.log(response.data.full_name)
         setUser(response.data);
       } catch (error) {
         console.log(error);
@@ -34,9 +33,9 @@ const UpdateAcc = ({ setShowModal }) => {
   }, [petId]);
 
   const [formData, setFormData] = useState({
-    id: petId,
-    name: user?.name,
-    url: user?.url,
+    user_id: petId,
+    full_name: user?.full_name,
+    address: user?.address
   });
 
   let navigate = useNavigate();
@@ -44,7 +43,7 @@ const UpdateAcc = ({ setShowModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/update-dog", {
+      const response = await axios.put("http://localhost:8000/update-user", {
         formData,
       });
       const success = response.status === 200;
@@ -65,13 +64,15 @@ const UpdateAcc = ({ setShowModal }) => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete("http://localhost:8000/dog", {
+      const response = await axios.delete("http://localhost:8000/user", {
         params: { petId },
       });
 
       if (response.status === 200) {
-        navigate("/mypets");
+        navigate("/");
         removeCookie("PetID", cookies.PetID);
+        removeCookie("UserId", cookies.UserId);
+        removeCookie("AuthToken", cookies.AuthToken);
       }
     } catch (err) {
       console.log(err);
@@ -106,9 +107,9 @@ const UpdateAcc = ({ setShowModal }) => {
             exit={{ y: 500 }}
             className="modal-content"
           >
-            <h2>Confirmar exclusão de pet</h2>
+            <h2>Confirmar exclusão de conta</h2>
             <p>
-              Tem certeza de que quer excluir seu pet? Todos os dados desse pet serão apagados.
+              Tem certeza de que quer excluir sua conta? Todos os dados dessa conta serão apagados.
             </p>
             <div className="modal-buttons">
               <motion.button
@@ -117,7 +118,7 @@ const UpdateAcc = ({ setShowModal }) => {
                 className="delete-button"
                 onClick={confirmDelete}
               >
-                Sim, desejo excluir meu pet
+                Sim, desejo excluir minha conta.
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.95 }}
@@ -139,16 +140,10 @@ const UpdateAcc = ({ setShowModal }) => {
         exit={{ y: 500 }}
         className="updateModal flex flex-col gap-y-4 justify-around items-center"
       >
-        <div className="close-icon self-end absolute top-4 right-6" onClick={handleClick}>
+        <div className="close-icon self-end absolute top-0 " onClick={handleClick}>
         <FontAwesomeIcon icon={faX} />
         </div>
-        <h2>EDITAR DADOS DO PET  </h2>
-        <div className="photo-container">
-          <img
-            src={formData?.url ? formData.url : user?.url}
-            alt="profile-pic"
-          />
-        </div>
+        <h2 className="m-4">EDITAR DADOS DO USUÁRIO  </h2>
         <form
           action=""
           onSubmit={handleSubmit}
@@ -159,12 +154,12 @@ const UpdateAcc = ({ setShowModal }) => {
             <div className="flex  flex-col gap-y-8">
               {/* Name field */}
               <div className="flex flex-col">
-                <label htmlFor="name">Nome</label>
+                <label htmlFor="full_name">Nome</label>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  placeholder={user?.name || ''}
+                  id="full_name"
+                  name="full_name"
+                  placeholder={user?.full_name || ''}
                   onChange={handleChange}
                 />
               </div>
@@ -176,15 +171,15 @@ const UpdateAcc = ({ setShowModal }) => {
               {/* Profile Picture field */}
               <div className="flex gap-x-8 items-center">
                 <div className="flex flex-col">
-                  <label htmlFor="url">Foto de Perfil</label>
+                  <label htmlFor="address">Endereço</label>
                   <input
-                    type="url"
-                    name="url"
-                    id="url"
+                    type="address"
+                    name="address"
+                    id="address"
                     onChange={handleChange}
                     className="w-full"
-                    placeholder={user?.url}
-                    value={formData?.url}
+                    placeholder={user?.address}
+                    value={formData?.address}
                   />
                 </div>
               </div>
@@ -215,7 +210,7 @@ const UpdateAcc = ({ setShowModal }) => {
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.01 }}
             >
-              Excluir Pet
+              Excluir Conta
             </motion.button>
           </div>
         </form>
@@ -224,4 +219,4 @@ const UpdateAcc = ({ setShowModal }) => {
   );
 };
 
-export default UpdateAcc;
+export default UpdateUserAcc;

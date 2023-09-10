@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faX } from "@fortawesome/free-solid-svg-icons";
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
@@ -96,8 +98,8 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         exit={{ y: 500, opacity: 0 }}
         className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
       >
-        <div className="close-icon float-right" onClick={handleClick}>
-          ⓧ
+        <div className="close-icon float-right absolute top-4 right-6" onClick={handleClick}>
+        <FontAwesomeIcon icon={faX} />
         </div>
         <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
         <p className="py-5">

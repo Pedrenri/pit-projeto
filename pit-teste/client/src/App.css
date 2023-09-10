@@ -272,10 +272,13 @@ select {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  user-select: none;
+  overflow: hidden;
 }
 
 .swipe {
   position: absolute;
+  overflow: hidden;
 }
 
 .card-container {
@@ -293,20 +296,29 @@ select {
 
 .card {
   background-color: #fff;
-  border-top-right-radius: 30px;
-  border-top-left-radius: 30px;
+  border-radius: 30px;
   background-size: cover;
   background-position: center;
   width: 25rem;
-  padding: 15px;
+  margin: 15px;
+  max-height: 30rem;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px lightgray;
 }
 
 .card img {
-  border: solid 1px lightgray;
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
+  width: 100%;
+  overflow: hidden;
+  height: auto; /* Maintain the image's aspect ratio */
+  object-fit: cover; /* Clip the image to cover the entire div */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
 }
 
 .card-info {
