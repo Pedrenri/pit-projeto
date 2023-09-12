@@ -75,7 +75,7 @@ const PetRegister = () => {
         <motion.div className="onboarding page-content"initial={{ x: "100%" }} // Posição inicial fora da tela
         animate={{ x: 0 }} // Posição final na tela
         exit={{ x: "-100%" }} // Posição ao sair da tela
-        transition={{ type: "tween", duration: 0.5 }}>
+        transition={{ type: "spring", duration: 0.5 }}>
           <h2>CADASTRAR ANIMAL</h2>
           <form
             action=""
