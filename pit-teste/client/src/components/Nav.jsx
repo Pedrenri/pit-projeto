@@ -8,7 +8,7 @@ const Nav = ({ minimal, authToken, setShowModal, showModal, setIsSignUp }) => {
   };
 
   return (
-    <nav className="flex justify-between w-full">
+    <nav className="flex justify-between px-4 w-full">
       <div className="logo-container">
         <img
           src={minimal ? colorlogo : whitelogo}

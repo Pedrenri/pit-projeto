@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -9,10 +9,33 @@ function VerificationForm() {
   const [message, setMessage] = useState("");
   const [cookies] = useCookies(["userId"]);
   const navigate = useNavigate();
-  const userId = cookies.UserId;
+  const userId = cookies.userId;
+
+  const inputRefs = [
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+  ];
+
+  const handleInputChange = (index, value) => {
+    const updatedCode = [...verificationCode];
+    updatedCode[index] = value;
+    setVerificationCode(updatedCode);
+
+    if (value.length === 0 && index > 0) {
+      // Se o usuário deletar um caractere e não for o primeiro input
+      inputRefs[index - 1].current.focus(); // Foca no input anterior
+    } else if (value.length === 1 && index < inputRefs.length - 1) {
+      // Se um caractere for digitado e não for o último input
+      inputRefs[index + 1].current.focus(); // Foca no próximo input
+    }
+  };
 
   const handleVerification = async () => {
-    const code = verificationCode.join(""); // Combine os 6 caracteres em um único código
+    const code = verificationCode.join("");
 
     try {
       const response = await axios.post("http://localhost:8000/verification", {
@@ -29,12 +52,6 @@ function VerificationForm() {
     }
   };
 
-  const handleInputChange = (index, value) => {
-    const updatedCode = [...verificationCode];
-    updatedCode[index] = value;
-    setVerificationCode(updatedCode);
-  };
-
   useEffect(() => {
     const handlePaste = (e) => {
       const clipboardData = e.clipboardData || window.clipboardData;
@@ -43,7 +60,7 @@ function VerificationForm() {
 
       if (pastedChars.length === 6) {
         setVerificationCode(pastedChars);
-        e.preventDefault(); // Impede a colagem padrão
+        e.preventDefault();
       }
     };
 
@@ -56,10 +73,10 @@ function VerificationForm() {
 
   return (
     <div className="verification">
-      <motion.div className="input-holder w-11/12 md:w-1/2 lg:w-1/4" initial={{ x: "-100%" }} // Posição inicial fora da tela
-        animate={{ x: 0 }} // Posição final na tela
-        exit={{ x: "100%" }} // Posição ao sair da tela
-        transition={{ type: "tween", duration: 0.5 }}>
+      <motion.div className="input-holder w-11/12 md:w-1/2 lg:w-1/4" initial={{ x: "-100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", duration: 0.5 }}>
         <h1>Verificar Email</h1>
         <div className="verification-code-inputs">
           {verificationCode.map((char, index) => (
@@ -69,6 +86,7 @@ function VerificationForm() {
               value={char}
               onChange={(e) => handleInputChange(index, e.target.value)}
               maxLength={1}
+              ref={inputRefs[index]}
             />
           ))}
         </div>

@@ -74,10 +74,10 @@ const Onboarding = () => {
       <div className="page-container">
         <motion.div
           className="onboarding page-content"
-          initial={{ x: "-100%" }} // Posição inicial fora da tela
+          initial={{ x: "100%" }} // Posição inicial fora da tela
           animate={{ x: 0 }} // Posição final na tela
-          exit={{ x: "100%" }} // Posição ao sair da tela
-          transition={{ type: "tween", duration: 0.5 }}
+          exit={{ x: "-100%" }} // Posição ao sair da tela
+          transition={{ type: "spring", duration: 0.5 }}
         >
           <h2>CRIAR CONTA</h2>
           <form
