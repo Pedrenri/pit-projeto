@@ -20,7 +20,7 @@ const Dashboard = () => {
   const userId = cookies.PetID;
   const getUser = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/dog", {
+      const response = await axios.get("http://44.204.7.86/dog", {
         params: { petId: userId },
       });
       setPet(response.data);
@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   const getGenderedUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/gendered-users", {
+      const response = await axios.get("http://44.204.7.86/gendered-users", {
         params: {
           gender: pet?.gender_interest,
           owner_id: pet?.owner_id,
@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   const updateMatches = async (matchedUserId) => {
     try {
-      await axios.put("http://localhost:8000/addmatch", {
+      await axios.put("http://44.204.7.86/addmatch", {
         petID,
         matchedUserId,
       });

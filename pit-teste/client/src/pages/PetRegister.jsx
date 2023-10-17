@@ -20,7 +20,7 @@ const PetRegister = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/dog-breeds")
+      .get("http://44.204.7.86/dog-breeds")
       .then((response) => {
         setBreedOptions(response.data);
       })
@@ -34,7 +34,7 @@ const PetRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/addpet", {
+      const response = await axios.put("http://44.204.7.86/addpet", {
         formData,
       });
       console.log(response);

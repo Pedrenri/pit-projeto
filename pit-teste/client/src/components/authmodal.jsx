@@ -34,7 +34,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       }
 
       const response = await axios.post(
-        `http://localhost:8000/${isSignUp ? "signup" : "login"}`,
+        `http://44.204.7.86/${isSignUp ? "signup" : "login"}`,
         { email, password }
       );
 
@@ -53,7 +53,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       window.location.reload();
     } catch (error) {
       console.log(error);
-      setError(error.response.data);
+      setError(error.response);
     }
   };
 
@@ -79,7 +79,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
   const handleForgotPassword = async () => {
     try {
-      await axios.post("http://localhost:8000/forgot-password", { email });
+      await axios.post("http://44.204.7.86/forgot-password", { email });
       window.alert(
         "Um email de redefinição de senha foi enviado para o seu endereço de email!"
       );

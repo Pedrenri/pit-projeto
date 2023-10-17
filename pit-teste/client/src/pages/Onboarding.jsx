@@ -23,7 +23,7 @@ const Onboarding = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/user", {
+      const response = await axios.put("http://44.204.7.86/user", {
         formData,
       });
       console.log(response);

@@ -19,10 +19,12 @@ const MyPetsPage = () => {
   useEffect(() => {
     const getMyPets = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/dogs", {
+        const response = await axios.get("http://44.204.7.86/dogs", {
           params: { userId },
         });
         setPets(response.data);
+        console.log(response.data)
+        console.log(userId)
       } catch (error) {
         console.log(error);
       }
@@ -76,7 +78,7 @@ const MyPetsPage = () => {
       
       <h1 className="text-3xl font-semibold mb-4">Meus Animais</h1>
       <div className="flex flex-wrap justify-center items-center m-2">
-        {pets.map((pet) => (
+        {Array.isArray(pets) && pets?.map((pet) => (
           <div key={pet.id} className="m-2">
             <div className="pet-item bg-white rounded-lg shadow-md hover:shadow-lg cursor-pointer">
               <img

@@ -38,7 +38,7 @@ function VerificationForm() {
     const code = verificationCode.join("");
 
     try {
-      const response = await axios.post("http://localhost:8000/verification", {
+      const response = await axios.post("http://44.204.7.86/verification", {
         verificationCode: code,
         userId,
       });

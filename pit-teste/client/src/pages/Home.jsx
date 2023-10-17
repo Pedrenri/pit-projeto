@@ -114,7 +114,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div id="principal">
+      {/* <div id="principal">
         <div id="pequena" className="shadow-2xl">
           <div className="texto">
             <h1 className="sobrenos"> SOBRE NÓS</h1>
@@ -200,7 +200,7 @@ const Home = () => {
       </div>
 
       <footer id="footer">
-        {/* <form>
+        <form>
           <label htmlFor="fname" id="Fformm">
             {" "}
           </label>
@@ -213,9 +213,9 @@ const Home = () => {
           />
           <br />
           <input type="submit" />
-        </form> */}
-        <img src={whitelogo} id="logo" width="400px" /* height="60px" */ />
-      </footer>
+        </form>
+        <img src={whitelogo} id="logo" width="400px" />
+      </footer> */}
     </>
   );
 };
