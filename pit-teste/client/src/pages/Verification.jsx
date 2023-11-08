@@ -9,7 +9,7 @@ function VerificationForm() {
   const [message, setMessage] = useState("");
   const [cookies] = useCookies(["userId"]);
   const navigate = useNavigate();
-  const userId = cookies.userId;
+  const userId = cookies.UserId;
 
   const inputRefs = [
     useRef(null),
@@ -36,9 +36,10 @@ function VerificationForm() {
 
   const handleVerification = async () => {
     const code = verificationCode.join("");
+    console.log(code)
 
     try {
-      const response = await axios.post("http://44.204.7.86/verification", {
+      const response = await axios.post("http://localhost:8000/verification", {
         verificationCode: code,
         userId,
       });

@@ -21,7 +21,7 @@ const UpdateAcc = ({ setShowModal }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get("http://44.204.7.86/dog", {
+        const response = await axios.get("http://localhost:8000/dog", {
           params: { petId: petId }
         });
         console.log(response.data.name)
@@ -44,7 +44,7 @@ const UpdateAcc = ({ setShowModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://44.204.7.86/update-dog", {
+      const response = await axios.put("http://localhost:8000/update-dog", {
         formData,
       });
       const success = response.status === 200;
@@ -65,7 +65,7 @@ const UpdateAcc = ({ setShowModal }) => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete("http://44.204.7.86/dog", {
+      const response = await axios.delete("http://localhost:8000/dog", {
         params: { petId },
       });
 

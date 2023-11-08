@@ -19,7 +19,7 @@ const MyPetsPage = () => {
   useEffect(() => {
     const getMyPets = async () => {
       try {
-        const response = await axios.get("http://44.204.7.86/dogs", {
+        const response = await axios.get("http://localhost:8000/dogs", {
           params: { userId },
         });
         setPets(response.data);
@@ -56,7 +56,15 @@ const MyPetsPage = () => {
     removeCookie("PetID", cookies.PetId)
     removeCookie("AuthToken", cookies.AuthToken)
     removeCookie("UserId", cookies.UserId)
+    
   }
+
+  const checkSymbol= (pet) => {
+    let symbol = pet?.gender_identity === "male" ? "♂" : "♀";
+    return symbol
+  } 
+
+  
 
   return (
     <div className="my-pets-page bg-gray-100 min-h-screen p-4">
@@ -64,13 +72,13 @@ const MyPetsPage = () => {
       <FontAwesomeIcon
           icon={faSignOut}
           className=""
-          title="Editar dados do usuário"
+          title="Sair"
           onClick={handleLogOut}
         />
         <FontAwesomeIcon
           icon={faCog}
           className=""
-          title="Sair"
+          title="Editar dados do usuário"
           onClick={handleUserIconClick}
         />
         
@@ -88,7 +96,7 @@ const MyPetsPage = () => {
                 alt={pet?.name}
               />
               <p className="pet-name text-center mt-2 font-semibold">
-                {pet?.name}
+                {pet?.name}<span className={pet?.gender_identity ==="male"?"text-2xl text-sky-700":"text-2xl text-pink-700"}>{checkSymbol(pet)}</span>
               </p>
               <button
                 className="edit-pet-button text-blue-500"

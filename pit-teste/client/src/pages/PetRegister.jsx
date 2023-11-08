@@ -9,6 +9,7 @@ const PetRegister = () => {
   const [cookies] = useCookies(["user"]);
   const [formData, setFormData] = useState({
     owner_id: cookies.UserId,
+    owner_name: cookies.UserName,
     name: "",
     age: "",
     gender: "male",
@@ -20,7 +21,7 @@ const PetRegister = () => {
 
   useEffect(() => {
     axios
-      .get("http://44.204.7.86/dog-breeds")
+      .get("http://localhost:8000/dog-breeds")
       .then((response) => {
         setBreedOptions(response.data);
       })
@@ -34,7 +35,7 @@ const PetRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://44.204.7.86/addpet", {
+      const response = await axios.put("http://localhost:8000/addpet", {
         formData,
       });
       console.log(response);
@@ -65,6 +66,10 @@ const PetRegister = () => {
       );
     }
   };
+
+  function handleMyPets() {
+    navigate("/mypets")
+  }
 
   console.log(formData);
 
@@ -167,7 +172,9 @@ const PetRegister = () => {
               </div>
               <input type="submit" className="w-11/12" />
             </section>
+            
           </form>
+          <a className="text-sky-800" onClick={handleMyPets}>Todos os Meus Pets</a>
         </motion.div>
       </div>
     </>

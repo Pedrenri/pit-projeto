@@ -1,4 +1,5 @@
 import Nav from "../components/Nav";
+import PetMatchLanding from "../components/PetMatchLanding";
 import { useState, useEffect } from "react";
 import AuthModal from "../components/authmodal";
 import { motion } from "framer-motion";
@@ -6,6 +7,7 @@ import { useCookies } from "react-cookie";
 import image4 from "../assets/image 4.svg";
 import image5 from "../assets/image 5.svg";
 import whitelogo from "../assets/white_logo.png";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [cookies, setCookie, removeCookie] = useCookies(null);
@@ -19,6 +21,8 @@ const Home = () => {
   const [index, setIndex] = useState(1);
   const toRotate = ["OLÁ, AUMIGO!", "Somos a PetMatch!"];
   const period = 2000;
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     let ticker = setInterval(() => {
@@ -69,6 +73,8 @@ const Home = () => {
     }
   };
 
+  
+
   return (
     <>
       <div className="overlay w-screen h-screen">
@@ -92,6 +98,7 @@ const Home = () => {
           >
             {authToken ? "Sair" : "Criar Conta"}
           </motion.button>
+          
           {showModal && (
             <AuthModal
               setShowModal={setShowModal}
@@ -114,6 +121,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <PetMatchLanding />
       {/* <div id="principal">
         <div id="pequena" className="shadow-2xl">
           <div className="texto">
