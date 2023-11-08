@@ -43,6 +43,10 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       const hasUsername = response.data.userName;
       const isVerified = response.data.isVerified;
 
+      if (hasUsername) {
+        setCookie("UserName", response.data.userName)
+      }
+
       const success = response.status === 201;
 
       if ((success && isSignUp) || (success && !isSignUp && !hasUsername))
@@ -53,7 +57,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       window.location.reload();
     } catch (error) {
       console.log(error);
-      setError(error.response.data);
+      setError(error.response);
     }
   };
 

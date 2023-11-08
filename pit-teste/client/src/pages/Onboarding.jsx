@@ -83,9 +83,9 @@ const Onboarding = () => {
           <form
             action=""
             onSubmit={handleSubmit}
-            className="flex justify-center flex-col sm:flex-row items-center sm:items-start"
+            className="lg:flex justify-center flex-col sm:flex-row items-center sm:items-start"
           >
-            <section className="md:w-4/12 flex ">
+            <section className="md:w-8/12 flex flex-col mx-auto">
               <label htmlFor="first_name">Nome completo</label>
               <input
                 type="text"
@@ -119,7 +119,7 @@ const Onboarding = () => {
                 onChange={handleChange}
               />
 
-              <div className="multInputHolder">
+              <div className="multInputHolder lg:flex">
                 <div>
                   <label>Data de Nascimento</label>
                   <div className="multInputContainer justify-center md:justify-start">
@@ -137,7 +137,7 @@ const Onboarding = () => {
 
                 <div>
                   <label>Sexo</label>
-                  <div className="multInputContainer justify-center md:justify-start">
+                  <div className="multInputContainer md:flex lg:flex-row justify-center md:justify-start">
                     <input
                       type="radio"
                       id="man_gender_id"

@@ -350,8 +350,7 @@ app.put("/user", async (req, res) => {
         gender_identity: formData.gender_identity,
         matches: formData.matches,
         user_name: formData.user_name,
-        address: formData.address,
-        gender_interest: formData.gender_identity == "woman" ? "man" : "woman",
+        address: formData.address
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
@@ -363,8 +362,8 @@ app.put("/user", async (req, res) => {
 
 //VERIFICATION
 app.post("/verification", async (req, res) => {
-  /* const userVerificationCode = req.body.verificationCode;
-  const userId = req.cookies.userId; // Altere para o nome correto do cookie armazenado no navegador */
+   /* const userVerificationCode = req.body.verificationCode;
+  const userId = req.cookies.UserId; */ // Altere para o nome correto do cookie armazenado no navegador 
   const { userId, verificationCode } = req.body;
 
   const client = new MongoClient(uri);
@@ -648,6 +647,7 @@ app.put("/addpet", async (req, res) => {
     const insertDocument = {
       id: generatePetID,
       owner_id: formData.owner_id,
+      owner_name:formData.onwer_name,
       name: formData.name,
       age: formData.age,
       gender_identity: formData.gender,
@@ -692,4 +692,4 @@ app.get("/dog-breeds", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log("Server running on PORT" + PORT));
+app.listen(PORT,  () => console.log("Server running on PORT" + PORT));

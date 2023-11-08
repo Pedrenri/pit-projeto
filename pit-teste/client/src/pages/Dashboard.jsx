@@ -115,7 +115,8 @@ const Dashboard = () => {
           </div>
           <div className="absolute top-4 right-4 z-50">
             {pet && (
-              <img
+              <motion.img
+              whileHover={{scale:1.1}}
                 src={pet.url} /* Use a URL do perfil selecionado */
                 alt={pet.name}
                 className="w-12 h-12 rounded-full object-cover log-out-icon"
@@ -132,7 +133,7 @@ const Dashboard = () => {
                 onSwipe={(dir) => swiped(dir, character.id)}
                 onCardLeftScreen={() => outOfFrame(character.name)}
               >
-                <div className="card">
+                <div  className="card">
                   <div className="card-img">
                     <img
                       src={character.url}
@@ -143,14 +144,14 @@ const Dashboard = () => {
                 </div>
                 <div className="card-info bg-white">
                   <h3 className=" drop-shadow-lg text-2xl text-left">
-                    {character.name}, <span>{character.age}</span> <br />
+                    {character.name}{character.gender_identity === "male" ? "♂" : "♀"}, <span>{character.age}</span> <br />
                     <span className="text-lg">{character.breed}</span>
                   </h3>
                 </div>
               </TinderCard>
             ))}
-            {!filteredGenderedUsers && (
-              <p>Ops! Parece que você já viu tudo aqui!</p>
+            {filteredGenderedUsers && (
+              <p className="text-white">Ops! Parece que você já viu tudo aqui!</p>
             )}
           </div>
         </div>

@@ -25,7 +25,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start:frontend": "react-scripts start",
+    "start:frontend": "react-scripts start --host 200.187.182.114",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
