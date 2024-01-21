@@ -2,18 +2,20 @@ import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useCookies } from "react-cookie";
+import config from "../config";
 
 const MatchesDisplay = ({ matches, setClickedUser }) => {
   const matchedUserIds = matches.map(({ id }) => id);
   const [cookies] = useCookies(null);
   const [matchedProfiles, setMatchedProfiles] = useState(null);
+  const apiURL = config.apiUrl
   /* const userId = cookies.UserId; */
   const petID = cookies.PetID;
   const [lastMessages, setLastMessages] = useState({}); // Estado para armazenar as últimas mensagens
 
   const getMatches = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/users", {
+      const response = await axios.get(`${apiURL}/users`, {
         params: { userIds: JSON.stringify(matchedUserIds) },
       });
       setMatchedProfiles(response.data);

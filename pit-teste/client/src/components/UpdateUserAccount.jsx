@@ -6,12 +6,14 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import config from "../config";
 
 const UpdateUserAcc = ({ setShowModal }) => {
   const [cookies, removeCookie] = useCookies(["user"]);
   const [user, setUser] = useState(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Add showModal state
   const [updateSuccess, setUpdateSuccess] = useState(false); // Add updateSuccess state
+  const apiURL = config.apiUrl
 
   /* const userId = cookies.UserId; */
   const petId = cookies.UserId;
@@ -19,7 +21,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/user", {
+        const response = await axios.get(`${apiURL}/user`, {
           params: { userId: petId },
         });
         console.log(response.data.full_name);
@@ -42,7 +44,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/update-user", {
+      const response = await axios.put("https://gold-magpie-garb.cyclic.app/update-user", {
         formData,
       });
       const success = response.status === 200;
@@ -63,7 +65,7 @@ const UpdateUserAcc = ({ setShowModal }) => {
 
   const confirmDelete = async () => {
     try {
-      const response = await axios.delete("http://localhost:8000/user", {
+      const response = await axios.delete("https://gold-magpie-garb.cyclic.app/user", {
         params: { userId: petId },
       });
 

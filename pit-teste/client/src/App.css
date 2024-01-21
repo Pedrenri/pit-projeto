@@ -655,7 +655,6 @@ footer input[type=submit] {
 .onboarding form input,
 select {
   padding: 5px 15px;
-  margin: 10px 0;
   font-size: 15px;
   border: solid 2px rgb(219, 219, 219);
   border-radius: 10px;
@@ -691,17 +690,17 @@ select {
   justify-content: space-between;
 }
 
-.onboarding form .multInputContainer {
+ .multInputContainer {
   display: flex;
   flex-direction: row;
   align-self: center;
 }
 
-.onboarding form .multInputContainer input {
+ .multInputContainer input {
   margin-right: 10px;
 }
 
-.onboarding form .multInputContainer label {
+ .multInputContainer label {
   padding: 10px;
   border: solid 2px rgb(144, 144, 144);
   border-radius: 10px;
@@ -709,27 +708,27 @@ select {
   margin-right: 10px;
 }
 
-.onboarding form input[type="radio"] {
+ input[type="radio"] {
   display: none;
 }
 
-.onboarding form input[type="checkbox"] {
+ input[type="checkbox"] {
   align-self: start;
 }
 
-.onboarding form input[type="submit"] {
+ input[type="submit"] {
   align-self: center;
 }
 
-.onboarding form input[type="radio"]:checked + label {
+ input[type="radio"]:checked + label {
   border: solid 2px rgb(221, 39, 22);
 }
 
-.onboarding form input[type="submit"]:hover {
+ input[type="submit"]:hover {
   background-color: rgb(235, 235, 235);
 }
 
-.onboarding form input[type="submit"]:active {
+ input[type="submit"]:active {
   background-color: rgb(226, 115, 115);
 }
 
@@ -967,7 +966,7 @@ select {
   right: 0;
   top: 50%;
   translate: 0 -50%;
-  max-width: 500px;
+  max-width: 700px;
   margin-left: auto;
   margin-right: auto;
   background-color: white;

@@ -85,7 +85,7 @@ const Home = () => {
           showModal={showModal}
           setIsSignUp={setIsSignUp}
         />
-        <div className="home mt-10 px-10 md:px-0">
+        <div className="home px-10 md:px-0">
           <h1 className="text-white text-6xl md:text-9xl mb-10">
             {text}&nbsp;
           </h1>

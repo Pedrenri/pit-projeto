@@ -409,6 +409,8 @@ app.put("/update-dog", async (req, res) => {
       $set: {
         name: formData?.name ? formData.name : user?.name,
         url: formData?.url ? formData.url : user?.url,
+        age: formData?.age ? formData.age : user?.age,
+        breed: formData?.breed ? formData.breed : user?.breed,
       },
     };
     const insertedUser = await users.updateOne(query, updateDocument);
@@ -647,7 +649,7 @@ app.put("/addpet", async (req, res) => {
     const insertDocument = {
       id: generatePetID,
       owner_id: formData.owner_id,
-      owner_name:formData.onwer_name,
+      owner_name:formData.owner_name,
       name: formData.name,
       age: formData.age,
       gender_identity: formData.gender,
