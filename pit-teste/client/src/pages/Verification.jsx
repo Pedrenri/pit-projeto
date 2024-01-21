@@ -3,6 +3,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import config from "../config";
 
 function VerificationForm() {
   const [verificationCode, setVerificationCode] = useState(["", "", "", "", "", ""]);
@@ -10,6 +11,7 @@ function VerificationForm() {
   const [cookies] = useCookies(["userId"]);
   const navigate = useNavigate();
   const userId = cookies.UserId;
+  const apiURL = config.apiUrl
 
   const inputRefs = [
     useRef(null),
@@ -39,7 +41,7 @@ function VerificationForm() {
     console.log(code)
 
     try {
-      const response = await axios.post("http://localhost:8000/verification", {
+      const response = await axios.post(`${apiURL}/verification`, {
         verificationCode: code,
         userId,
       });

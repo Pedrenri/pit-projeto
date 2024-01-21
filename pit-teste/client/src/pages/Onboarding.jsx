@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import config from "../config";
 
 const Onboarding = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
@@ -16,6 +17,8 @@ const Onboarding = () => {
     user_name: "",
     address: "",
   });
+  const apiURL = config.apiUrl;
+
   const [error, setError] = useState(null);
 
   let navigate = useNavigate();
@@ -23,7 +26,7 @@ const Onboarding = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/user", {
+      const response = await axios.put(`${apiURL}/user`, {
         formData,
       });
       console.log(response);

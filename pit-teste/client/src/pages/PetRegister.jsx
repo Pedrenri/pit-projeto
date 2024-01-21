@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {motion} from "framer-motion"
+import config from "../config";
 
 const PetRegister = () => {
   const [cookies] = useCookies(["user"]);
@@ -18,10 +19,13 @@ const PetRegister = () => {
     matches: [],
   });
   const [breedOptions, setBreedOptions] = useState([]);
+  const apiURL = config.apiUrl
+
+  console.log(cookies.UserName)
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/dog-breeds")
+      .get(`${apiURL}/dog-breeds`)
       .then((response) => {
         setBreedOptions(response.data);
       })
@@ -35,7 +39,7 @@ const PetRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put("http://localhost:8000/addpet", {
+      const response = await axios.put(`${apiURL}/addpet`, {
         formData,
       });
       console.log(response);

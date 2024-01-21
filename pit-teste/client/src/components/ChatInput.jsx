@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
+import config from '../config';
 
 const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessages }) => {
   const [textArea, setTextArea] = useState('');
   const userId = user?.id;
   const clickedUserId = clickedUser?.id;
   const textareaRef = useRef(null);
+  const apiURL = config.apiUrl
 
   const addMessage = async () => {
     // Verificar se o texto não é apenas espaços em branco
@@ -21,7 +23,7 @@ const ChatInput = ({ user, clickedUser, getUsersMessages, getClickedUsersMessage
     };
 
     try {
-      await axios.post('http://localhost:8000/message', { message });
+      await axios.post(`${apiURL}/message`, { message });
       getUsersMessages();
       getClickedUsersMessages();
       setTextArea('');

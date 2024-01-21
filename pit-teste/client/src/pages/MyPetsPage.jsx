@@ -7,6 +7,7 @@ import UpdateUserAcc from "../components/UpdateUserAccount"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import { faSignOut } from "@fortawesome/free-solid-svg-icons";
+import config from "../config";
 
 const MyPetsPage = () => {
   const [cookies, setCookie, removeCookie] = useCookies(["UserId", "PetID"]);
@@ -15,11 +16,12 @@ const MyPetsPage = () => {
   const navigate = useNavigate();
   const [isUserModalVisible, setIsUserModalVisible] = useState(false);
   const [pets, setPets] = useState([]);
+  const apiURL = config.apiUrl
 
   useEffect(() => {
     const getMyPets = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/dogs", {
+        const response = await axios.get(`${apiURL}/dogs`, {
           params: { userId },
         });
         setPets(response.data);
@@ -96,7 +98,7 @@ const MyPetsPage = () => {
                 alt={pet?.name}
               />
               <p className="pet-name text-center mt-2 font-semibold">
-                {pet?.name}<span className={pet?.gender_identity ==="male"?"text-2xl text-sky-700":"text-2xl text-pink-700"}>{checkSymbol(pet)}</span>
+                {pet?.name}<span className={pet?.gender_identity ==="male"?"pl-2 text-3xl text-sky-700  font-black":"text-3xl pl-2 font-black text-pink-700"}>{checkSymbol(pet)}</span>
               </p>
               <button
                 className="edit-pet-button text-blue-500"

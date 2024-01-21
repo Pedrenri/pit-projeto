@@ -5,6 +5,7 @@ import { MenuIcon } from "@heroicons/react/outline"; // Importe o ícone do Hero
 import { useNavigate } from "react-router-dom";
 import ChatContainer from "../components/ChatContainer";
 import { motion } from "framer-motion";
+import config from "../config";
 
 import axios from "axios";
 
@@ -16,11 +17,12 @@ const Dashboard = () => {
   const [lastDirection, setLastDirection] = useState();
   const [isChatOpen, setIsChatOpen] = useState(false); // Estado para controlar se o ChatContainer está aberto
   const navigate = useNavigate();
+  const apiURL = config.apiUrl
 
   const userId = cookies.PetID;
   const getUser = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/dog", {
+      const response = await axios.get(`${apiURL}/dog`, {
         params: { petId: userId },
       });
       setPet(response.data);
@@ -32,7 +34,7 @@ const Dashboard = () => {
 
   const getGenderedUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/gendered-users", {
+      const response = await axios.get(`${apiURL}/gendered-users`, {
         params: {
           gender: pet?.gender_interest,
           owner_id: pet?.owner_id,
@@ -57,7 +59,7 @@ const Dashboard = () => {
 
   const updateMatches = async (matchedUserId) => {
     try {
-      await axios.put("http://localhost:8000/addmatch", {
+      await axios.put(`${apiURL}/addmatch`, {
         petID,
         matchedUserId,
       });
@@ -145,7 +147,8 @@ const Dashboard = () => {
                 <div className="card-info bg-white">
                   <h3 className=" drop-shadow-lg text-2xl text-left">
                     {character.name}{character.gender_identity === "male" ? "♂" : "♀"}, <span>{character.age}</span> <br />
-                    <span className="text-lg">{character.breed}</span>
+                    <span className="text-lg">{character?.breed}</span> <br />
+                    <span className="text-lg"> {character?.owner_name? "Dono: " + character.owner_name: ""}</span>
                   </h3>
                 </div>
               </TinderCard>

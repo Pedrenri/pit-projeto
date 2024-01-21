@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faX } from "@fortawesome/free-solid-svg-icons";
+import config from "../config";
 
 const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [email, setEmail] = useState(null);
@@ -15,6 +16,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
   const [passwordStrength, setPasswordStrength] = useState("");
 
   let navigate = useNavigate();
+  const apiURL = config.apiUrl;
 
   const handleClick = () => {
     setShowModal(false);
@@ -34,7 +36,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       }
 
       const response = await axios.post(
-        `http://localhost:8000/${isSignUp ? "signup" : "login"}`,
+        `${apiURL}${isSignUp ? "/signup" : "/login"}`,
         { email, password }
       );
 
@@ -44,7 +46,8 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       const isVerified = response.data.isVerified;
 
       if (hasUsername) {
-        setCookie("UserName", response.data.userName)
+        setCookie("UserName", response.data.userName);
+        setCookie("IsVerified", isVerified);
       }
 
       const success = response.status === 201;
@@ -57,7 +60,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
       window.location.reload();
     } catch (error) {
       console.log(error);
-      setError(error.response);
+      setError(error.response.data);
     }
   };
 
@@ -83,13 +86,15 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
 
   const handleForgotPassword = async () => {
     try {
-      await axios.post("http://localhost:8000/forgot-password", { email });
+      await axios.post(`${apiURL}/forgot-password`, {
+        email,
+      });
       window.alert(
         "Um email de redefinição de senha foi enviado para o seu endereço de email!"
       );
     } catch (error) {
-      console.log(error);
-      setError(error.response.data.message);
+      console.log(error.response.data);
+      setError(error.response.data);
     }
   };
 
@@ -102,13 +107,16 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         exit={{ y: 500, opacity: 0 }}
         className="authmodal h-4/5 xl:h-2/3 top-24 xl:top-48"
       >
-        <div className="close-icon float-right absolute top-4 right-6" onClick={handleClick}>
-        <FontAwesomeIcon icon={faX} />
+        <div
+          className="close-icon float-right absolute top-4 right-6"
+          onClick={handleClick}
+        >
+          <FontAwesomeIcon icon={faX} />
         </div>
         <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
         <p className="py-5">
           Ao clicar em Enviar, você aceita nossos termos. Veja comos cuidamos de
-          seus dados em nossa Política de Privacidade e Política de Cookies.
+          seus dados em nossa Política de Privacidade e Política de Cookies. {apiURL}
         </p>
         <form className="flex flex-col" action="" onSubmit={handleSubmit}>
           <input
