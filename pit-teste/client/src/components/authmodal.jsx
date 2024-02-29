@@ -116,7 +116,7 @@ const AuthModal = ({ setShowModal, setIsSignUp, isSignUp }) => {
         <h2>{isSignUp ? "Criar Conta" : "Login"}</h2>
         <p className="py-5">
           Ao clicar em Enviar, você aceita nossos termos. Veja comos cuidamos de
-          seus dados em nossa Política de Privacidade e Política de Cookies. {apiURL}
+          seus dados em nossa Política de Privacidade e Política de Cookies.
         </p>
         <form className="flex flex-col" action="" onSubmit={handleSubmit}>
           <input
